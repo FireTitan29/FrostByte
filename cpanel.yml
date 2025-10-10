@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/defianb6c2l6/public_html/FrostByte
+    - /bin/cp -R * $DEPLOYPATH
