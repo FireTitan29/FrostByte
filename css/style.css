@@ -1,0 +1,916 @@
+/* Importing the google fonts we will be using */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+
+:root {
+    /* My Theme Style Variables */
+    /* I made these to keep track of what
+    colours and sizes etc I am using */
+    --darkBlue: rgb(8, 75, 131);
+    --neonBlue: rgb(37, 110, 255);
+    --lightBlue: rgb(66, 191, 221);
+    --greyBlue: rgb(187, 230, 228);
+    --myWhite: rgb(240, 246, 246);
+    --accentPink: rgb(255, 102, 179);
+    --accentPinkDark: rgb(255, 10, 120);
+    --fontXLarge: 26px;
+    --fontLarge: 22px;
+    --fontMedium: 18px;
+    --fontUsername:15px;
+    --fontText: 14px;
+    --fontSmallMedium: 12px;
+    --fontSmall: 10px;
+    --windowBoxShadow: rgba(66, 191, 221, 0.3) 1px 4px 5px;
+    --logoFont: Titan One;
+    
+    /* Button Styles */
+    --buttonBorderStyle: none;
+    --buttonPadding: 8px 80px 8px 80px;
+    --buttonBorderRadius: 3px;
+    --transtionTime: 0.2s ease;
+    
+    /* Window Styles */
+    --windowPadding: 20px;
+    --inputPadding: 8px 5px 8px 15px;
+    --inputMarginBottom: 20px;
+
+    /* Navigation Bar */
+    --iconSize: 45px;
+    --iconSizeHover: 50px
+}
+
+/* Ensuring we have our fonts setup correctly */
+* {
+  font-family: 'Rubik', sans-serif;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;      
+    justify-content: flex-start; 
+    min-height: 100%;
+    /* background: var(--greyBlue); */
+    background-image: url(../images/Background.svg);
+    background-size:cover;
+    background-repeat: repeat-y;
+    background-position: center top;
+}
+
+h1, h2, h3 {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  margin: 0px;
+  display: inline-block;
+}
+
+p {
+  font-weight: 400;
+}
+
+
+.linkDiv-Form {
+    margin-top: 8px;
+    font-size: var(--fontSmall);
+    color: var(--darkBlue);
+}
+
+.gap {
+    margin-bottom: 85px;
+}
+
+/* Buttons */
+.button-Profile {
+    background-color: var(--lightBlue);
+    color: var(--myWhite);
+    border-style: var(--buttonBorderStyle);
+    border-radius: var(--buttonBorderRadius);
+    transition: var(--transtionTime);
+    font-size: var(--fontText);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+    margin-top: 5px;
+    width: 90px;
+    margin-left: 15px;
+}
+
+.button-Form {
+    background-color: var(--lightBlue);
+    color: var(--myWhite);
+    border-style: var(--buttonBorderStyle);
+    padding: var(--buttonPadding);
+    border-radius: var(--buttonBorderRadius);
+    transition: var(--transtionTime);
+    font-size: var(--fontText);
+    margin-bottom: 10px;
+    margin-top: 10px;
+    max-width: 280px;
+    width: 87%;
+}
+
+.button-Form:hover, .button-Profile:hover, .settings-button:hover {
+    background-color: var(--accentPink);
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.button-Form:active, .button-Profile:active, .settings-button:active {
+    background-color: var(--lightBlue);
+    transform: scale(0.95);
+}
+
+.mainForm-Holder {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 100vh;
+    width: 100%;
+}
+
+/* Profile View */
+.window-Profile {
+    max-width: 430px;
+    /* width: 82%; */
+    padding: var(--windowPadding);
+    padding-bottom: 0px;
+    padding-left: 14px;
+    padding-right: 16px;
+    background-color: var(--myWhite);
+    text-align: center;
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-style: solid;
+    border-color: var(--lightBlue);
+    border-radius: var(--buttonBorderRadius);
+    border-color: var(--lightBlue);
+    box-shadow: var(--windowBoxShadow);
+    border-width: 2px;
+    margin-bottom: 15px;
+}
+
+/* This next section is all of the styling for
+    the profile page */
+.picture-info-Profile {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.picture-profile {
+    /* background-color: red; */
+    width: 105px;
+    height: 105px;
+    object-fit: cover;
+    border-radius: 100%;
+    border-style: solid;
+    border-color: var(--lightBlue);
+    border-width: 2px;
+}
+
+.name-bio-Profile {
+    text-align: left;
+    margin-left: 15px;
+}
+
+.top-holder-Profile {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start;
+}
+
+.settings-button {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 4px 3.5px 0px 3.5px;
+    border-radius: 50%;
+    width: 33px;
+    background-color: var(--lightBlue);
+    border-style: none;
+    /* margin-right: 1px; */
+    margin-bottom: 2px;
+}
+
+.settings-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.settings-holder:hover .settingsText-Profile{
+    color: var(--accentPink);
+    cursor: pointer;
+}
+.settings-holder:hover .settings-button{
+    background-color: var(--accentPink);
+}
+
+.settings-icon {
+    width: 25px;
+    height: 25px;
+}
+
+.settingsText-Profile {
+    font-size: var(--fontSmallMedium);
+    color: var(--lightBlue);
+    margin-top: 12px;
+    margin-right: 2px;
+    text-align: center;
+    transition: var(--transtionTime);
+    text-decoration: none;
+}
+
+
+.username-Profile {
+    display: block;
+    margin: 0;              
+    padding-top: 6px;
+    font-size: var(--fontMedium);
+    color: var(--accentPink);
+    font-weight: 700;
+    align-self: flex-start;
+}
+
+.email-Profile {
+    font-size: var(--fontSmallMedium);
+    color: var(--lightBlue);
+}
+
+.bio-Profile {
+    font-size: var(--fontText);
+    color: var(--darkBlue);
+    margin-top: 5px;
+    text-align: justify;
+}
+
+.buttons-Profile {
+    display: flex;
+    justify-content: end;
+}
+
+
+/* Forms */
+.window-Form {
+    max-width: 300px;
+    width: 90%;
+    padding: var(--windowPadding);
+    background-color: var(--myWhite);
+    text-align: center;
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-style: solid;
+    border-color: var(--lightBlue);
+    border-radius: var(--buttonBorderRadius);
+    border-color: var(--lightBlue);
+    border-width: 2px;
+    box-shadow: var(--windowBoxShadow);
+}
+
+/* For the name of the form Login/SignUp Etc */
+.mainHeading-Form {
+    font-family: var(--logoFont);
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: var(--lightBlue);
+    font-size: var(--fontLarge);
+}
+
+.accentColor {
+    color: var(--accentPink);
+    font-family: var(--logoFont);
+}
+.tagLine-Form {
+    font-weight: normal;
+    color: var(--accentPink);
+    font-size: var(--fontText);
+    margin-bottom: 25px;
+}
+
+.subHeading-Form {
+    margin-bottom: 10px;
+    color: var(--lightBlue);
+    font-size: var(--fontText);
+}
+
+.textInput-Form {
+    text-align: left;
+    color: var(--darkBlue);
+    font-size: var(--fontText);
+    width: 80%;
+    max-width: 280px;
+    border: none;
+    border-bottom-style: solid;
+    border-color: var(--darkBlue);
+    border-radius: var(--buttonBorderRadius);
+    padding: var(--inputPadding);
+    border-width: 2px;
+    /* padding-left: 20px; */
+    margin-bottom: var(--inputMarginBottom);
+    transition: var(--transtionTime);
+}
+
+.genderGroup {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+/* Hide the actual radios circle input thingys */
+.genderInput {
+    display: none;
+}
+
+/* Button look for labels (to make the radios look like buttons) */
+.genderLabel {
+    display: flex;      
+    flex-direction: column;  
+    align-items: center;          
+    justify-content: center;  
+    line-height: 1.1;  
+    background-color: var(--lightBlue);
+    color: var(--myWhite);
+    padding: 8px 16px;
+    width: 80px;
+    /* margin: 5px 0; */
+    border-radius: var(--buttonBorderRadius);
+    cursor: pointer;
+    font-size: var(--fontText);
+    transition: background-color var(--transtionTime), transform var(--transtionTime);
+}
+
+/* Indicate to user when the radio is selected */
+.genderInput:checked + .genderLabel {
+    background-color: var(--accentPink);
+    transform: scale(1.05);
+}
+
+.genderHelpText {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--fontSmall);
+    margin-top: 0px;
+}
+
+
+/* Light Animation for the user to see they are interacting with the website */
+.textInput-Form:focus, .captionField-AddPost:focus  {
+    outline: none;             
+    border-color: var(--accentPink);
+    box-shadow: none;
+    transform: scale(1.05);
+}
+
+.textInput-Form::placeholder, .captionField-AddPost::placeholder {
+    color: var(--greyBlue);
+    text-align: left;
+    /* padding-left: 10px; */
+}
+
+.textInput-Form:not(:placeholder-shown):not(:focus){
+  border-color: var(--lightBlue);
+  color: var(--lightBlue);
+}
+
+.captionField-AddPost:not(:placeholder-shown):not(:focus){
+  border-color: var(--lightBlue);
+  color: var(--lightBlue);
+}
+
+.forgotPassword-Form {
+    color: var(--accentPink);
+    font-size: var(--fontText);
+}
+.forgotPassword-Form:hover {
+    color: var(--accentPinkDark);
+}
+
+/* Navigation Bar */
+
+.notifications-holder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: var(--myWhite);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: var(--windowBoxShadow);
+}
+
+/* inner bar layout */
+.notifications-bar {
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.signUp-bar {
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.signUp-bar .logo {
+    height: 50px;
+    margin-right: 10px;
+}
+
+/* logo */
+.notifications-bar .logo {
+    height: 50px;
+    margin-right: 10px;
+}
+
+/* Search Bar Styling */
+.searchButton{
+    background-color: var(--myWhite);
+    border-style: none;
+}
+
+.searchIcon {
+    height: 30px;
+}
+
+.searchWrapper {
+    position: relative;
+    display: inline-block;
+    width: 250px;
+    margin-right: 10px;
+}
+
+.searchBarInput {
+    width: 100%;
+    padding: 8px 35px 8px 12px;
+    border: 1px solid var(--darkBlue);
+    border-radius: 20px;
+    font-size: var(--fontText);
+    outline: none;
+    color: var(--darkBlue);
+}
+
+.searchBarInput::placeholder {
+    color: var(--lightBlue);
+}
+
+.searchIconInside {
+    position: absolute;
+    right: 7px;      
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    cursor: pointer;
+}
+
+.searchIcon:hover {
+    cursor: pointer;
+}
+
+.searchBarForm {
+    display: flex;
+}
+
+/* right-side icons */
+.notif-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 4px;
+}
+
+.icon-holder {
+    position: relative;
+    cursor: pointer;
+}
+
+.icon-holder img {
+    width: 30px;
+}
+
+/* notifications number badge */
+.notifications-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--accentPinkDark);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 5px;
+}
+
+.navbar-holder {
+    background-color: var(--myWhite);
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;             
+    left: 0;           
+    width: 100%;    
+    z-index: 1000;
+    box-shadow: rgba(66, 191, 221, 0.1) 0px 10px 50px; 
+    
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    width: 350px;
+    background-color: var(--myWhite);
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+/* Hide the radio buttons */
+.navbar input[type="radio"] {
+    display: none;
+}
+
+.navbar label {
+    /* cursor: pointer; */
+    padding: 0px;
+    text-align: center;
+    font-size: var(--fontSmall);
+    color: var(--lightBlue);
+}
+.navbar input[type="radio"]:checked + label {
+  color: var(--accentPink);
+}
+.navbar input[type="radio"]:checked + label a {
+  color: var(--accentPink);
+}
+
+/* By default, show inactive icon */
+.navbar .active {
+    display: none;
+    width: var(--iconSize);
+    transition: var(--transtionTime);
+}
+
+.navbar .inactive {
+    display: inline;
+    width: var(--iconSize);
+    transition: var(--transtionTime);
+}
+
+/* Hover effect on Icons */
+.navbar .inactive:hover,
+.navbar .active:hover {
+    transform: scale(1.15);
+}
+
+/* When checked: swap to active */
+.navbar input[type="radio"]:checked + label .active {
+    display: inline;
+}
+.navbar input[type="radio"]:checked + label .inactive {
+    display: none;
+}
+
+.icon-AnchorTag {
+    text-decoration: none;
+    color: var(--lightBlue);
+}
+
+/* Posts Old Design */
+.holder-Post {
+    max-width: 300px;
+    width: 90%;
+    border-radius: var(--buttonBorderRadius);
+    background-color: var(--myWhite);
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 20px;
+    padding-bottom: 8px;
+    border: none;
+    border-bottom-style: solid;
+    border-color: var(--lightBlue);
+    box-shadow: var(--windowBoxShadow);
+    /* ! For now */
+    /* margin-bottom: 50px; */
+}
+
+/* !Images on Profile for Post History */
+
+.mainBlock-Post {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+}
+
+.smallProfileIcon-Post {
+    width: 38px;
+    height: 38px;
+    margin-right: 12px;
+    object-fit: cover;
+    border-radius: 100%;
+    border-style: solid;
+    border-color: var(--lightBlue);
+    border-width: 2px;
+
+}
+
+.userName-Post {
+    text-align: left;
+    margin-top: 11px;
+    font-size: var(--fontText);
+    color: var(--accentPink);
+    font-weight: bold;
+}
+
+.image-holder-Profile {
+    width: 375px;
+    display: flex;
+    justify-content: left;
+}
+
+.post-image-Profile {
+    width: 400px;
+    height: 215px;
+    object-fit: cover;
+    border-radius: var(--buttonBorderRadius);
+    padding-bottom: 4px;
+}
+
+.post-Text {
+    text-align: justify;
+    font-size: var(--fontText);
+    color: var(--darkBlue);
+    margin-bottom: 10px;
+    width: 375px;
+}
+
+.bottomHolder-Post {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 1px;
+}
+
+.timeStamp-Post {
+    font-size: var(--fontSmall);
+    color: var(--lightBlue);
+    display: inline;
+    margin-top: 12px;
+}
+
+.like-Holder-Post {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    line-height: 0;
+    padding-bottom: 10px;
+}
+
+.like-Counter-Post {
+    font-size: var(--fontMedium);
+    color: var(--accentPink);
+    margin-right: 5px;
+}
+
+.like-Post {
+    width: 25px;
+    margin-right: 2px;
+    display: block;    
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    transition: var(--transtionTime);
+}
+
+.like-Post:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.text-Post {
+    font-size: var(--fontText);
+    margin-top: 0px;
+    margin-bottom: 10px;
+    display: block;
+    text-align: justify;
+    text-align-last: left;
+    line-height: 1.25;
+}
+
+/*  From here is for Messaging */
+
+.sendNewMessage-Top {
+    text-align: center;
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.window-Message {
+    max-width: 465px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--myWhite);
+    border: none;
+    border-bottom: 2px solid var(--lightBlue);
+    border-radius: var(--buttonBorderRadius);
+    box-shadow: var(--windowBoxShadow);
+    margin-bottom: 15px;
+    overflow: hidden;
+    position: relative;
+    overflow-y: auto;
+    max-height: 750px;
+    box-sizing: border-box;
+}
+
+/* Internal bottom shadow effect */
+.window-Message::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(8, 75, 131,0), rgba(8, 75, 131,0.1));
+}
+
+.single-border-Messaging {
+    text-align: center;
+    border: none;
+    border-bottom: solid;
+    border-color: var(--greyBlue);
+    width: 430px;
+    margin-top: 8px;
+}
+
+.message-scroll-area {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 100%;
+    padding: 15px;
+    padding-right: 30px;
+}
+
+.single-contact-Messaging {
+    /* max-width: 420px; */
+    /* width: 100%; */
+    /* padding: var(--windowPadding); */
+    padding-bottom: 0px;
+    /* background-color: var(--myWhite); */
+
+}
+
+
+.picture-profile-Message {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 100%;
+    border-style: solid;
+    border-color: var(--lightBlue);
+    border-width: 2px;
+}
+
+.top-holder-Message {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start;
+}
+
+.username-Message {
+    display: block;
+    margin: 0;              
+    padding-top: 6px;
+    font-size: var(--fontText);
+    color: var(--accentPink);
+    font-weight: 700;
+    align-self: flex-start;
+}
+
+.lastMessage-Holder {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    width: 370px;
+    margin-bottom: 10px;
+}
+
+.last-Message {
+    font-size: var(--fontText);
+    color: var(--darkBlue);
+    margin-top: 5px;
+    display: inline;
+    text-align: justify; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 297px;
+}
+
+.timeStamp-Message {
+    font-size: var(--fontSmall);
+    color: var(--lightBlue);
+    display: inline;
+    margin-top: 0px;
+    width: 30px;
+    text-align: right;
+}
+
+.top-holder-Message {
+    display: flex; 
+    margin-right: 15px;
+    justify-content: space-between; 
+    align-items: flex-start;
+}
+
+/* Add a Post Window */
+
+.window-AddPost {
+    width: 465px;
+    background-color: var(--myWhite);
+    border-radius: var(--buttonBorderRadius);
+    max-width: 465px;
+    text-align: center;
+    background-color: var(--myWhite);
+    border: none;
+    border-bottom: 2px solid var(--lightBlue);
+    border-radius: var(--buttonBorderRadius);
+    box-shadow: var(--windowBoxShadow);
+    margin-bottom: 15px;
+    padding-top: 20px;
+}
+
+.captionField-AddPost {
+    margin-top: 25px;
+    width: 380px;
+    resize:none;
+    text-align: left;
+    color: var(--darkBlue);
+    font-size: var(--fontText);
+    border: none;
+    border-bottom-style: solid;
+    border-color: var(--darkBlue);
+    border-radius: var(--buttonBorderRadius);
+    padding: var(--inputPadding);
+    border-width: 2px;
+    transition: var(--transtionTime);
+}
+
+/* Hide the real input */
+#file-upload {
+  display: none;
+}
+
+/* Style the label to look like a button */
+.custom-file-upload-AddPost {
+    width: 180px;
+    /* padding: 15px 20px; */
+    background-color: var(--lightBlue);
+    color: white;
+    border: none;
+    border-radius: var(--buttonBorderRadius);
+    cursor: pointer;
+    display: flex;
+    font-size: var(--fontText);
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    transition: var(--transtionTime);
+    margin-bottom: 8px;
+}
+
+.button-Content {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.upload-icon {
+    height: 24px;
+    width: 24px;
+    padding: 2px;
+    margin: 0 auto;
+    display: block;
+    align-self: center;
+}
+
+.custom-file-upload-AddPost:hover {
+    background-color: var(--accentPink);
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.picture-icon-AddPost {
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+}
