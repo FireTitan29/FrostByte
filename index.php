@@ -52,7 +52,7 @@
             else if ($view === 'addpost') include "php/AddPost.php";
             else if ($view === 'messages') include "php/Messages.php";
             else {
-                    if ($view !== 'timeline') {
+                    if (($view !== 'timeline') ||(!isset($_GET['view']))) {
                         header("Location: index.php?view=timeline");
                         exit;
                     }
