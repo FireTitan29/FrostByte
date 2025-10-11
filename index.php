@@ -47,6 +47,7 @@
         else include 'php/TopLogo.php';
     ?>
     <!-- Loading in the different page options depending on the view -->
+    <!-- Login/SignUp Page -->
     <?php 
         if ($sessionActive) {
             if ($view === 'profile') include "php/Profile.php";
@@ -59,12 +60,8 @@
                     }
                     include "php/Timeline.php";
                 }  
-        }
-    ?> 
-    <!-- Login/SignUp Page -->
-        <?php 
-            if (!$sessionActive) {
-                if ($view === 'login') {
+        } else {
+            if ($view === 'login') {
                     include 'php/Login.php';
                 } else if ($view === 'signup') {
                     include 'php/SignUp.php';
@@ -72,8 +69,11 @@
                     header("Location: index.php?view=signup");
                     exit;
                 }
-            }
-        ?>
+        }
+        echo "View: $view, SessionActive: " . ($sessionActive ? "true" : "false");
+    ?> 
+
+
     <!-- Loading the Navigation Bar in -->
 <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
 </body>
