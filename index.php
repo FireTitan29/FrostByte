@@ -1,5 +1,9 @@
 <?php 
-    session_start();
+    // session_start();
+    session_destroy();
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
     $view = $_GET['view'] ?? '';
     // this function makes sure the icons change color by checking what
     // "view" (page) is selected in the URL
@@ -44,11 +48,7 @@
 <body>
     <!-- Loading our Notifications Bar in -->
     <?php if ($sessionActive) include 'php/NotificationsBar.php'; 
-        else {
-            echo "View: $view, SessionActive: " . ($sessionActive ? "true" : "false");
-            // include 'php/TopLogo.php';
-        } 
-
+        else include 'php/TopLogo.php';
     ?>
     <!-- Loading in the different page options depending on the view -->
     <!-- Login/SignUp Page -->
