@@ -40,7 +40,7 @@
             <label for="nav-profile">
                 <a class="icon-AnchorTag" href="index.php?view=profile">
                 <img src="icons/Profile.svg" class="icon inactive" alt="Profile">
-                <img src="icons/Profile-active.svg" class="icon active" alt="Profile">
+                <img src="icons/Profile-Active.svg" class="icon active" alt="Profile">
                 <br>
                 <span>Profile</span>
                 </a>
