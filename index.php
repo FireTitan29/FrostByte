@@ -5,7 +5,7 @@
 
     // session_start();
     $view = $_GET['view'] ?? '';
-    $sessionActive = false;
+    $sessionActive = true;
 
     // Handle redirects BEFORE output
     if ($sessionActive) {
