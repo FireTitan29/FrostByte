@@ -6,7 +6,7 @@
 
     // session_start();
     $view = $_GET['view'] ?? '';
-    $sessionActive = true;
+    $sessionActive = false;
 
     // Handle redirects BEFORE output (on the cpanel, it won't let me change
     // the header after html elements have landed on the page, so we'll handle
@@ -78,7 +78,7 @@
             }
         }
     ?> 
-    
+
     <!-- Loading the Navigation Bar in -->
 <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
 </body>

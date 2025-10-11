@@ -127,6 +127,7 @@ p {
     align-items: center; 
     height: 100vh;
     width: 100%;
+    margin-top: 30px;
 }
 
 /* Profile View */
@@ -913,4 +914,11 @@ p {
     width: 20px;
     height: 20px;
     margin-top: 10px;
+}
+
+/* Error Checking */
+.small-error-message {
+    display: block;
+    color: red;
+    margin-bottom: 5px;
 }
