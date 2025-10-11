@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    header("Location: index.php?view=0");
+    $view = $_GET['view'] ?? '';
     // this function makes sure the icons change color by checking what
     // "view" (page) is selected in the URL
     function selectNavigationIcon($iconName) {
@@ -25,7 +25,7 @@
     // if (session_status() == PHP_SESSION_ACTIVE) {
     //     $sessionActive = true;
     // }
-    $view = $_GET['view'] ?? '';
+
 
 ?>
 
@@ -64,15 +64,15 @@
     <!-- Login/SignUp Page -->
         <?php 
             if (!$sessionActive) {
-                if ($view === 'login') include 'php/Login.php';
-                else {
-                    if (!isset($_GET['view']) || $view === '') {
-                        header("Location: index.php?view=signup");
-                        exit;
-                    }
+                if ($view === 'login') {
+                    include 'php/Login.php';
+                } else if ($view === 'signup') {
                     include 'php/SignUp.php';
-                } 
-            } 
+                } else {
+                    header("Location: index.php?view=signup");
+                    exit;
+                }
+            }
         ?>
     <!-- Loading the Navigation Bar in -->
 <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
