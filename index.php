@@ -64,10 +64,7 @@
             if (!$sessionActive) {
                 if ($view === 'login') include 'php/Login.php';
                 else {
-                    if ($view !== 'signup') {
-                        header("Location: index.php?view=signup");
-                        exit;
-                    }
+                    header("Location: index.php?view=signup");
                     include 'php/SignUp.php';
                 } 
             } 
