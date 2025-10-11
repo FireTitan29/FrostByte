@@ -33,7 +33,7 @@
     function includePost($userName ,$imageName = '', $caption = '', $likesCount = 0) {
         $timeStamp = date("h:i:sa");
         if ($imageName === '') {
-            include "php/postText.php";
+            include "php/PostText.php";
         } else {
             include "php/PostImage.php";
         }
