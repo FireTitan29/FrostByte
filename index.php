@@ -1,12 +1,16 @@
 <?php 
-// debugging for errors when displaying on my domain (www.defiantlyduggan.co.za)
+    session_start();
+    // unset($_SESSION['user']);
+    // session_destroy();
+
+    // debugging for errors when displaying on my domain (www.defiantlyduggan.co.za)
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    // session_start();
     $view = $_GET['view'] ?? '';
-    $sessionActive = false;
+
+    $sessionActive = isset($_SESSION['user']);
 
     // Handle redirects BEFORE output (on the cpanel, it won't let me change
     // the header after html elements have landed on the page, so we'll handle
@@ -39,6 +43,67 @@
             include "php/PostText.php";
         } else {
             include "php/PostImage.php";
+        }
+    }
+    // instead of validating every single field with the same code,
+    // I have written a function so that I can reuse it whenever I need to
+    // this makes sure that a string isn't empty, and doesn't contain numbers
+    // this will be used for firstname, surname etc
+    function validateString($string, $field, &$errors)
+    {
+        if ($string === '') {
+            $errors[$field] = "Required!";
+            } else if (!preg_match("/^[a-zA-Z' -]+$/", $string)) {
+                $errors[$field] = "CANNOT contain numbers";
+            } else if (strlen($string) < 3 || strlen($string) > 25) {
+                $errors[$field] = "Must be between 3-25 characters";
+            }  else {
+            return true;
+        }
+            return false;
+    }
+
+    // Form Submissions
+    $name = '';
+    $surname =  '';
+    $email =  '';
+    $gender =  '';
+    $password =  '';
+    $passwordReType = '';
+    $errors = [];
+    if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'signup') {
+        // Getting all of the values that have been posted through the form
+        $name = trim($_POST['firstname'] ?? '');
+        $surname = trim($_POST['surname'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $gender = trim($_POST['gender'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        $passwordReType = trim($_POST['passwordretype'] ?? '');
+
+        // Form validation
+        validateString($name, 'firstname', $errors);
+        validateString($surname, 'surname', $errors);
+
+        // Validating the email using the built
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
+
+        if ($gender === '') $errors['gender'] = 'Please select an option';
+        if ($password === '' || $passwordReType === '') {
+            $errors["password"] = "Fields cannot be left empty";
+        } else if ($password !== $passwordReType) {
+            $errors["password"] = "Passwords do not match";
+        }
+
+        if (empty($errors)) {
+            // store the whole user in session
+            $_SESSION['user'] = [
+                'firstname' => $name,
+                'surname'   => $surname,
+                'email'     => $email,
+                'gender'    => $gender,
+            ];
+            header("Location: index.php?view=timeline");
+            exit;
         }
     }
 ?>

@@ -919,6 +919,6 @@ p {
 /* Error Checking */
 .small-error-message {
     display: block;
-    color: red;
+    color: var(--accentPink);
     margin-bottom: 5px;
 }
