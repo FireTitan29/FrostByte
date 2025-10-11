@@ -6,3 +6,5 @@ deployment:
     - mkdir -p $DEPLOYPATH
     # Sync contents of repo into FrostByte only, exclude .git + yaml itself
     - /bin/rsync -a --exclude='.git' --exclude='.cpanel.yml' ./ $DEPLOYPATH/
+      # Ensure correct permissions for the FrostByte folder
+    - /bin/chmod 755 /home/defianb6c2l6/public_html/FrostByte
