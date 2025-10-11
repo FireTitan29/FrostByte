@@ -1,4 +1,5 @@
 <?php 
+// debugging for errors when displaying on my domain (www.defiantlyduggan.co.za)
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
@@ -7,7 +8,9 @@
     $view = $_GET['view'] ?? '';
     $sessionActive = true;
 
-    // Handle redirects BEFORE output
+    // Handle redirects BEFORE output (on the cpanel, it won't let me change
+    // the header after html elements have landed on the page, so we'll handle
+    // the redirects here before the rest of the page loads)
     if ($sessionActive) {
         if ($view === '') {
             header("Location: index.php?view=timeline");
@@ -75,8 +78,7 @@
             }
         }
     ?> 
-
-
+    
     <!-- Loading the Navigation Bar in -->
 <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
 </body>
