@@ -1,5 +1,6 @@
 <?php 
     session_start();
+    header("Location: index.php?view=0");
     // this function makes sure the icons change color by checking what
     // "view" (page) is selected in the URL
     function selectNavigationIcon($iconName) {
@@ -21,9 +22,9 @@
 
     $sessionActive = false;
 
-    if (session_status() == PHP_SESSION_ACTIVE) {
-        $sessionActive = true;
-    }
+    // if (session_status() == PHP_SESSION_ACTIVE) {
+    //     $sessionActive = true;
+    // }
     $view = $_GET['view'] ?? '';
 
 ?>
