@@ -52,7 +52,7 @@
             else if ($view === 'addpost') include "php/AddPost.php";
             else if ($view === 'messages') include "php/Messages.php";
             else {
-                    if (($view !== 'timeline') ||(!isset($_GET['view']))) {
+                    if (!isset($_GET['view']) || $view === '') {
                         header("Location: index.php?view=timeline");
                         exit;
                     }
@@ -65,7 +65,7 @@
             if (!$sessionActive) {
                 if ($view === 'login') include 'php/Login.php';
                 else {
-                    if ($view !== 'signup' || !isset($_GET['view'])) {
+                    if (!isset($_GET['view']) || $view === '') {
                         header("Location: index.php?view=signup");
                         exit;
                     }
