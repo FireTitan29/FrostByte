@@ -1,10 +1,25 @@
 <?php 
-    // session_start();
-    session_destroy();
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
+
+    // session_start();
     $view = $_GET['view'] ?? '';
+    $sessionActive = false;
+
+    // Handle redirects BEFORE output
+    if ($sessionActive) {
+        if ($view === '') {
+            header("Location: index.php?view=timeline");
+            exit;
+        }
+    } else {
+        if ($view === '') {
+            header("Location: index.php?view=signup");
+            exit;
+        }
+    }
+
     // this function makes sure the icons change color by checking what
     // "view" (page) is selected in the URL
     function selectNavigationIcon($iconName) {
@@ -23,14 +38,6 @@
             include "php/PostImage.php";
         }
     }
-
-    $sessionActive = false;
-
-    // if (session_status() == PHP_SESSION_ACTIVE) {
-    //     $sessionActive = true;
-    // }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -58,21 +65,14 @@
             else if ($view === 'addpost') include "php/AddPost.php";
             else if ($view === 'messages') include "php/Messages.php";
             else {
-                    if (!isset($_GET['view']) || $view === '') {
-                        header("Location: index.php?view=timeline");
-                        exit;
-                    }
-                    include "php/Timeline.php";
-                }  
+                include "php/Timeline.php";
+            }  
         } else {
             if ($view === 'login') {
-                    include 'php/Login.php';
-                } else if ($view === 'signup') {
-                    include 'php/SignUp.php';
-                } else {
-                    header("Location: index.php?view=signup");
-                    exit;
-                }
+                include 'php/Login.php';
+            } else if ($view === 'signup') {
+                include 'php/SignUp.php';
+            }
         }
     ?> 
 
