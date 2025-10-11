@@ -1,4 +1,8 @@
+---
 deployment:
   tasks:
     - export DEPLOYPATH=/home/defianb6c2l6/public_html/FrostByte
-    - /bin/cp -R * $DEPLOYPATH
+    # Make sure the FrostByte folder exists, don't touch other files in public_html
+    - mkdir -p $DEPLOYPATH
+    # Sync contents of repo into FrostByte only, exclude .git + yaml itself
+    - /bin/rsync -a --exclude='.git' --exclude='.cpanel.yml' ./ $DEPLOYPATH/
