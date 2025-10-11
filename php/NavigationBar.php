@@ -39,8 +39,8 @@
             <input type="radio" id="nav-profile" name="nav"  <?php selectNavigationIcon("profile"); ?>>
             <label for="nav-profile">
                 <a class="icon-AnchorTag" href="index.php?view=profile">
-                <img src="icons/profile.svg" class="icon inactive" alt="Profile">
-                <img src="icons/profile-active.svg" class="icon active" alt="Profile">
+                <img src="icons/Profile.svg" class="icon inactive" alt="Profile">
+                <img src="icons/Profile-active.svg" class="icon active" alt="Profile">
                 <br>
                 <span>Profile</span>
                 </a>

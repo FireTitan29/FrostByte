@@ -44,8 +44,11 @@
 <body>
     <!-- Loading our Notifications Bar in -->
     <?php if ($sessionActive) include 'php/NotificationsBar.php'; 
-        else include 'php/TopLogo.php';
-        echo "View: $view, SessionActive: " . ($sessionActive ? "true" : "false");
+        else {
+            echo "View: $view, SessionActive: " . ($sessionActive ? "true" : "false");
+            // include 'php/TopLogo.php';
+        } 
+
     ?>
     <!-- Loading in the different page options depending on the view -->
     <!-- Login/SignUp Page -->
