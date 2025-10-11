@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     // this function makes sure the icons change color by checking what
     // "view" (page) is selected in the URL
     function selectNavigationIcon($iconName) {
