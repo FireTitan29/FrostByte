@@ -1,5 +1,4 @@
 <?php 
-    // ! Debug
     session_start();
     // unset($_SESSION['user']);
     // session_destroy();
@@ -11,7 +10,19 @@
 
     $view = $_GET['view'] ?? '';
 
-    $sessionActive = isset($_SESSION['user']);
+    // logging out of account
+    function logout() {
+        session_unset();
+        session_destroy();
+        header('Location: index.php?view=login');
+        exit;
+    }
+
+    if ($view === 'logout') {
+        logout();
+    }
+
+    $sessionActive = isset($_SESSION['user_id']);
 
     // Handle redirects BEFORE output (on the cpanel, it won't let me change
     // the header after html elements have landed on the page, so we'll handle
@@ -77,9 +88,37 @@
 
             // if fetchColumn returns something, the email exists therefore
             // we cannot proceed with signup
-            return (bool) $stmt->fetchColumn(PDO::FETCH_ASSOC);
+            return (bool) $stmt->fetchColumn();
 
     }
+
+    function checkPasswordIsCorrect($password, $email) {
+        // connecting to the DB
+        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+
+        $stmt = $pdo->prepare('SELECT password FROM users WHERE email = :email LIMIT 1');
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $pass_hash = $stmt->fetchColumn();
+        
+        // if the password is correct, then we return true, otherwise they aren't the same
+        return (bool) password_verify($password, $pass_hash);
+    }
+
+    function getUserDetails($email) {
+        // connecting to the DB
+        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+        
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = :email');
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user;
+    }
+
 
     // Form Submissions
     $name = '';
@@ -90,6 +129,7 @@
     $passwordReType = '';
     $errors = [];
 
+    // Signup Page Submission, Form Validation & Adding to DB
     if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'signup') {
         // Getting all of the values that have been posted through the form
         $name = trim($_POST['firstname'] ?? '');
@@ -125,13 +165,14 @@
 
             // insert using placeholder
             $stmt = $pdo->prepare(
-            'INSERT INTO users (email, firstname, surname, password)
-            VALUES (:email, :firstname, :surname, :password)');
+            'INSERT INTO users (email, firstname, surname, gender, password)
+            VALUES (:email, :firstname, :surname, :gender, :password)');
 
             // stopping SQL injection
             $stmt->bindValue(':email', $email);
             $stmt->bindValue(':firstname', $name);
             $stmt->bindValue(':surname', $surname);
+            $stmt->bindValue(':gender', $gender);
             $stmt->bindValue(':password', $hashedPassword);
 
             $stmt->execute();
@@ -140,6 +181,43 @@
             exit;
         }
     }
+
+     // Login Page Submission, Form Validation & Retrieving credentials from DB
+    if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'login') {
+
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+
+        // Validation of email, then password
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
+        else if (checkEmailExists($email)) { 
+            if (!checkPasswordIsCorrect($password, $email)) {
+                $errors["email"] = "Wrong email/password combination";
+            }
+        }
+        else {
+            $errors["email"] = "User does not exist...";
+        }
+
+        // if there are no errors, then we pull all the details into the session
+        // except for the password of course, and then we go to the timeline
+        if (empty($errors))
+        {
+            $user = getUserDetails($email);
+
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email']   = $user['email'];
+            $_SESSION['firstname'] = $user['firstname'];
+            $_SESSION['surname']   = $user['surname'];
+            $_SESSION['gender']   = $user['gender'];
+
+            // Redirect to timeline after login has been successful
+            header("Location: index.php?view=timeline");
+            exit;
+        }
+    }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -170,13 +248,13 @@
                 include "php/Timeline.php";
             }  
         } else {
-            if ($view === 'login') {
-                include 'php/Login.php';
-            } else if ($view === 'signup') {
+            if ($view === 'signup') {
                 include 'php/SignUp.php';
+            } else {
+                include 'php/Login.php';
             }
         }
-    ?> 
+            ?> 
 
     <!-- Loading the Navigation Bar in -->
 <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>

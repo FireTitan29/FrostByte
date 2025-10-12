@@ -17,7 +17,10 @@
     </div>
     <div class="buttons-Profile">
         <button class="button-Profile">Edit Profile</button>
-        <a href=""><button class="button-Profile">Logout</button></a>
+        <form method="get" action="index.php">
+            <input type="hidden" name="view" value="logout">
+        <button type="submit" class="button-Profile">Logout</button>
+</form>
     </div>
 </div>
 

@@ -1,10 +1,11 @@
 <div class="mainForm-Holder">
-    <form class="window-Form" action="POST">
+    <form class="window-Form" method="POST">
         <h3 class="mainHeading-Form"><span class="accentColor">Login</span> to FrostByte</h3>
         <span style="margin-bottom: 25px; display:block;"></span>
-        <input class="textInput-Form" type="text" placeholder="Email Address">
+        <small class="small-error-message"><?php if (isset($errors['email'])) echo $errors['email'];?></small>
+        <input class="textInput-Form" type="text" placeholder="Email Address" name="email">
         <br>
-        <input class="textInput-Form" type="password" placeholder="Password" style="margin-bottom: 10px;">
+        <input class="textInput-Form" type="password" placeholder="Password" style="margin-bottom: 10px;" name='password'>
         <span style="margin-bottom: 5px; display:block;"></span>
         <a href="" class="forgotPassword-Form">Forgot Password</a>
         <span style="margin-bottom: 5px; display:block;"></span>
