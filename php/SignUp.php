@@ -5,13 +5,13 @@
         <h3 class="subHeading-Form">Your Sweet Identity</h3>
 
         <small class="small-error-message"><?php if (isset($errors['firstname'])) echo $errors['firstname']; ?></small>
-        <input class="textInput-Form" type="text" placeholder="First Name" name="firstname" value="<?php echo $name ?>"><br>
+        <input class="textInput-Form" type="text" placeholder="First Name" name="firstname" value="<?php echo htmlspecialchars($name) ?>"><br>
 
         <small class="small-error-message"><?php if (isset($errors['surname'])) echo $errors['surname'];?></small>
-        <input class="textInput-Form" type="text" placeholder="Surname" name="surname" value="<?php echo $surname ?>"><br>
+        <input class="textInput-Form" type="text" placeholder="Surname" name="surname" value="<?php echo htmlspecialchars($surname) ?>"><br>
 
         <small class="small-error-message"><?php if (isset($errors['email'])) echo $errors['email'];?></small>
-        <input class="textInput-Form" type="text" placeholder="Email Address" name="email" value="<?php echo $email ?>">
+        <input class="textInput-Form" type="text" placeholder="Email Address" name="email" value="<?php echo htmlspecialchars($email) ?>">
         <br>
         <h3 class="subHeading-Form">What's your Flavour?</h3>
         <small class="small-error-message"><?php if (isset($errors['gender'])) echo $errors['gender'];?></small>
@@ -25,8 +25,8 @@
         <br>
         <h3 class="subHeading-Form">Secret Recipe</h3>
         <small class="small-error-message"><?php if (isset($errors['password'])) echo $errors['password']; ?></small>
-        <input class="textInput-Form" type="password" placeholder="Password" name="password" value="<?php echo $password ?>">
-        <input class="textInput-Form" type="password" placeholder="Retype Password" name="passwordretype" value="<?php echo $passwordReType ?>">
+        <input class="textInput-Form" type="password" placeholder="Password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+        <input class="textInput-Form" type="password" placeholder="Retype Password" name="passwordretype" value="<?php echo htmlspecialchars($passwordReType) ?>">
         <br>
         <button class="button-Form">Sign Up</button>
         <br>

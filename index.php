@@ -1,4 +1,5 @@
 <?php 
+    // ! Debug
     session_start();
     // unset($_SESSION['user']);
     // session_destroy();
@@ -63,6 +64,23 @@
             return false;
     }
 
+    // this function ensures that the email the user is signing up with is unique
+    function checkEmailExists($email) {
+            // connecting to the DB
+            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+
+            $stmt = $pdo->prepare('SELECT email FROM users WHERE email = :email LIMIT 1');
+            $stmt->bindValue(':email', $email);
+
+            $stmt->execute();
+
+            // if fetchColumn returns something, the email exists therefore
+            // we cannot proceed with signup
+            return (bool) $stmt->fetchColumn(PDO::FETCH_ASSOC);
+
+    }
+
     // Form Submissions
     $name = '';
     $surname =  '';
@@ -71,6 +89,7 @@
     $password =  '';
     $passwordReType = '';
     $errors = [];
+
     if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'signup') {
         // Getting all of the values that have been posted through the form
         $name = trim($_POST['firstname'] ?? '');
@@ -84,8 +103,9 @@
         validateString($name, 'firstname', $errors);
         validateString($surname, 'surname', $errors);
 
-        // Validating the email using the built
+        // Validating the email using the built in method, and then also using our custom function to check the db
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
+        else if (checkEmailExists($email)) $errors["email"] = "Email is already in use by another user";
 
         if ($gender === '') $errors['gender'] = 'Please select an option';
         if ($password === '' || $passwordReType === '') {
@@ -94,15 +114,29 @@
             $errors["password"] = "Passwords do not match";
         }
 
-        if (empty($errors)) {
-            // store the whole user in session
-            $_SESSION['user'] = [
-                'firstname' => $name,
-                'surname'   => $surname,
-                'email'     => $email,
-                'gender'    => $gender,
-            ];
-            header("Location: index.php?view=timeline");
+        // if there are no errors, add user info to DB, then redirect to login page
+        if (empty($errors)) { 
+
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            // connecting to the DB
+            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+
+            // insert using placeholder
+            $stmt = $pdo->prepare(
+            'INSERT INTO users (email, firstname, surname, password)
+            VALUES (:email, :firstname, :surname, :password)');
+
+            // stopping SQL injection
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':firstname', $name);
+            $stmt->bindValue(':surname', $surname);
+            $stmt->bindValue(':password', $hashedPassword);
+
+            $stmt->execute();
+
+            header("Location: index.php?view=login");
             exit;
         }
     }
