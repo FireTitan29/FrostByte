@@ -106,6 +106,73 @@
         return (bool) password_verify($password, $pass_hash);
     }
 
+    // function for validating files, reused for all file uploads of images
+    // there are a lot of comments here because this is quite complicated
+    function validateFile($fileName,$fileTempPath, $fileSize, &$errors) {
+
+        // Ensuring we only get the file types we want, and also
+        // stop malware injection by validating file MIME type
+        $fileExtentionsAllowed = ['jpg', 'jpeg', 'png'];
+        $fileMIMEsAllowed = ['image/jpeg', 'image/png'];
+
+        // getting the file's extention and then ensuring it is lowercase
+        // for uniformity, so we can validate it
+        $extention = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        // Validating the file from here:
+        // Extension
+        if(!in_array($extention, $fileExtentionsAllowed)) {
+            $errors['image'] = "Only JPG and PNG files are allowed";
+            return false;
+        } 
+
+        // MIME type using finfo (file info) functions
+        // first we open the file, to read the type
+        // then we save the type into mime, then we close the file
+        // then we ensure the mime is the same as what is in our array
+        // that we are validating towards
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime  = finfo_file($finfo, $fileTempPath);
+        finfo_close($finfo);
+        if (!in_array($mime, $fileMIMEsAllowed)) {
+            $errors['image'] = "Invalid file type. Only JPG and PNG files are allowed";
+            return false;
+        }
+        
+        // File Size (4MB file size cap)
+        if ($fileSize > (4 * 1024 *1024)) {
+            $errors['image'] = "File size is too large. Max 4MB";
+            return false;
+        }
+        
+        // Extra layer of protection to protect against mime spoofing
+        // again, we want to ensure nobody can upload viruses or issues
+        // into our site
+        $checkFileImage = getimagesize($fileTempPath);
+        if ($checkFileImage === false) {
+            $errors['image'] = "The uploaded file is not an image file";
+            return false;
+        }
+        return true;
+    }
+
+    function addPostToDB($caption, $imagePath = '') {
+        // connecting to the DB
+        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+
+        $stmt = $pdo->prepare(
+        'INSERT INTO posts (user_id, caption, image_path)
+        VALUES (:user_id, :caption, :image_path)');
+
+        // stopping SQL injection
+        $stmt->bindValue(':user_id', $_SESSION['user']['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':caption', $caption, PDO::PARAM_STR);
+        $stmt->bindValue(':image_path', $imagePath, PDO::PARAM_STR);
+        
+        $stmt->execute();
+    }
+
     function getUserDetails($email) {
         // connecting to the DB
         $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
@@ -125,6 +192,7 @@
     $surname =  '';
     $email =  '';
     $gender =  '';
+    $caption =  '';
     $password =  '';
     $passwordReType = '';
     $errors = [];
@@ -154,19 +222,71 @@
             $errors["password"] = "Passwords do not match";
         }
 
+        // Validating Profile Picture if user has uploaded something
+        if (!empty($_FILES['image']['name'])) {
+            if ($_FILES['image']['error'] === UPLOAD_ERR_OK)
+            {
+                // getting all of the file details
+                $fileTempPath = $_FILES['image']['tmp_name'];
+                $fileName = $_FILES['image']['name'];
+                $fileSize = $_FILES['image']['size'];
+                $fileType = $_FILES['image']['type'];
+
+                // Using the function we made to validate the file
+                validateFile($fileName, $fileTempPath, $fileSize, $errors);
+
+            } else {
+                $errors['image'] = "Error during file upload.";
+            }
+        }
+
         // if there are no errors, add user info to DB, then redirect to login page
-        if (empty($errors)) { 
+        if (empty($errors)) {
+            $fileExists = false;
+
+            // Default value for the profile picture if nothing is uploaded
+            $destPath = 'icons/profile-picture-none.svg';
+
+            if (!empty($_FILES['image']['name'])) {  
+
+                $fileExists = true;
+
+                // Making sure the directory exists,
+                // and if not making the directory with the correct
+                // permissions in place
+                $folderName = $email;
+                $dir = __DIR__ . "/uploads/profilepictures/$folderName";
+                
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0777, true);
+                } 
+
+                $userSurname = $surname;
+    
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    
+                // Generating a new Name for the image
+                $newName    = $email . '.' . $ext;
+                $destPath = "uploads/profilepictures/$folderName/$newName";
+                
+                $fullPath = $dir . "/" . $newName;
+
+                // Finally, moving everything into the correct file destination
+                // and also adding it to the DB
+                move_uploaded_file($fileTempPath, $fullPath);
+            }
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             // connecting to the DB
             $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+            $stmt = '';
 
             // insert using placeholder
             $stmt = $pdo->prepare(
-            'INSERT INTO users (email, firstname, surname, gender, password)
-            VALUES (:email, :firstname, :surname, :gender, :password)');
+            'INSERT INTO users (email, firstname, surname, gender, password, profile_pic)
+            VALUES (:email, :firstname, :surname, :gender, :password, :profile_pic)');
 
             // stopping SQL injection
             $stmt->bindValue(':email', $email);
@@ -174,9 +294,9 @@
             $stmt->bindValue(':surname', $surname);
             $stmt->bindValue(':gender', $gender);
             $stmt->bindValue(':password', $hashedPassword);
+            $stmt->bindValue(':profile_pic', $destPath);
 
             $stmt->execute();
-
             header("Location: index.php?view=login&signup=success");
             exit;
         }
@@ -260,6 +380,89 @@
             exit;
         }
     }
+
+    // Adding a new post
+    if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'addpost') {
+        
+        $caption = trim($_POST['caption'] ?? '');
+        
+        if (empty($_FILES['image']['name']) && empty($caption))
+        {
+            $errors['image'] = "You cannot make an empty post!";
+        }
+
+        // Creating the variables
+        $fileTempPath = ''; 
+        $fileName = ''; 
+        $fileSize = ''; 
+        $fileType = ''; 
+
+
+        if (!empty($_FILES['image']['name'])) {
+            if ($_FILES['image']['error'] === UPLOAD_ERR_OK)
+            {
+                // getting all of the file details
+                $fileTempPath = $_FILES['image']['tmp_name'];
+                $fileName = $_FILES['image']['name'];
+                $fileSize = $_FILES['image']['size'];
+                $fileType = $_FILES['image']['type'];
+
+                // Using the function we made to validate the file
+                validateFile($fileName, $fileTempPath, $fileSize, $errors);
+
+            } else {
+                $errors['image'] = "Error during file upload.";
+            }
+        }
+        
+        // Decided to keep all posts uniform with a max value of
+        // 280 characters for captions (like Twitter used to do)
+        if (strlen($caption) > 280) {
+            $length = strlen($caption);
+            $errors['caption'] = "$length / 280 Characters, (280 Max)";
+        }
+
+
+        if (empty($errors)) {
+            if (!empty($_FILES['image']['name'])) {
+                
+                // Making sure the directory exists,
+                // and if not making the directory with the correct
+                // permissions in place
+                $folderName = $_SESSION['user']['email'];
+                $dir = __DIR__ . "/uploads/posts/$folderName";
+                
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0777, true);
+                } 
+
+                $userSurname = $_SESSION['user']['surname'];
+    
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    
+                // Generating a new Name for the image
+                $newName    = uniqid("img_$userSurname", true) . '.' . $ext;
+                $destPath = "uploads/posts/$folderName/$newName";
+                
+                $fullPath = $dir . "/" . $newName;
+
+                // Finally, moving everything into the correct file destination
+                // and also adding it to the DB
+                if (move_uploaded_file($fileTempPath, $fullPath)) {
+                    addPostToDB($caption, $destPath);
+                    header("Location: index.php?view=addpost&post=success");
+                    exit;
+                } else {
+                    header("Location: index.php?view=addpost&post=failed");
+                    exit;
+                }
+            } else {
+                addPostToDB($caption);
+                header("Location: index.php?view=addpost&post=success");
+                exit;
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -275,31 +478,41 @@
 
 </head>
 <body>
-    <!-- Loading our Notifications Bar in -->
-    <?php if ($sessionActive) include 'php/NotificationsBar.php'; 
-        else include 'php/TopLogo.php';
-    ?>
-    <!-- Loading in the different page options depending on the view -->
-    <!-- Login/SignUp Page -->
-    <?php 
-        if ($sessionActive) {
-            if ($view === 'profile') include "php/Profile.php";
-            else if ($view === 'addpost') include "php/AddPost.php";
-            else if ($view === 'messages') include "php/Messages.php";
-            else {
-                include "php/Timeline.php";
-            }  
-        } else {
-            if ($view === 'signup') {
-                include 'php/SignUp.php';
-            } else if ($view === 'passwordreset') {
-                include 'php/PasswordReset.php';  
+    <div class="page-wrapper">
+        <!-- Loading our Notifications Bar in -->
+        <?php if ($sessionActive) include 'php/NotificationsBar.php'; 
+            else include 'php/TopLogo.php';
+        ?>
+        <!-- Loading in the different page options depending on the view -->
+        <!-- Login/SignUp Page -->
+        <?php 
+            if ($sessionActive) {
+                if ($view === 'profile') {
+                    include "php/Profile.php";
+                } else if ($view === 'addpost') {
+                    include "php/AddPost.php";                   
+                } else if ($view === 'messages'){ 
+                    include "php/Messages.php";
+                } else {
+                    include "php/Timeline.php";
+                }  
             } else {
-                include 'php/Login.php';
+                if ($view === 'signup') {
+                    include 'php/SignUp.php';
+                } else if ($view === 'passwordreset') {
+                    include 'php/PasswordReset.php';  
+                } else {
+                    include 'php/Login.php';
+                }
             }
-        }
-            ?> 
+                ?> 
+        <!-- Loading the Navigation Bar in -->
+        <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
+    </div>
 
-    <!-- Loading the Navigation Bar in -->
-<?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
+    <!-- JavaScript -->
+     <!-- Live Image Viewer -->
+    <?php if ($view == 'addpost' || $view = 'signup'): ?>
+        <script src="js/live_image_viewer.js"></script>
+    <?php endif; ?>
 </body>

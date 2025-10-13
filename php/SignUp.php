@@ -1,5 +1,5 @@
 <div class="mainForm-Holder">
-    <form class="window-Form" method="POST">
+    <form class="window-Form" method="POST" enctype="multipart/form-data">
         <h3 class="mainHeading-Form"><span class="accentColor">Sign Up</span> to FrostByte</h3>
         <h3 class="tagLine-Form"><i>Are you fresh from the freezer?</i></h3><br>
         <h3 class="subHeading-Form">Your Sweet Identity</h3>
@@ -22,6 +22,23 @@
         <input type="radio" id="gender-cup" name="gender" value="Female" class="genderInput" <?php if ($gender === 'Female') echo "selected"?>>
         <label for="gender-cup" class="genderLabel">Cone<br><span class="genderHelpText">Female<span></label>
         </div>
+        <br>
+        <!-- Image Adding of Profile Picture -->
+         <h3 class="subHeading-Form" style="margin-bottom: 0px;">Add a Profile Picture</h3>
+        <small class="small-error-message"><?php if (isset($errors['image'])) echo $errors['image']; ?></small>
+        <div class="image-holder-AddPost">
+            <img id="preview" src="" alt="Preview" class="image-profilePicturePreview">
+        </div>
+        <div class="linkDiv-Form">(Optional) Max 4MB</div>
+        <span style="margin-bottom: 5px; display:block;"></span>
+        <label class="custom-file-upload-AddPost">
+            <div class="button-Content">
+                <img src="icons/UploadImage.svg" alt="Upload" class="upload-icon" />
+                <span>Upload Image</span>
+            </div>
+        <input type="file" name="image" id="image" hidden accept=".jpg,.jpeg,.png">
+        </label>
+        <!-- Rest of Form after image -->
         <br>
         <h3 class="subHeading-Form">Secret Recipe</h3>
         <small class="small-error-message"><?php if (isset($errors['password'])) echo $errors['password']; ?></small>

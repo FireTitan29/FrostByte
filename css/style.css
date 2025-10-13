@@ -36,7 +36,10 @@
 
     /* Navigation Bar */
     --iconSize: 45px;
-    --iconSizeHover: 50px
+    --iconSizeHover: 50px;
+
+    --topbar-h: 10px;
+    --bottombar-h: 30px;
 }
 
 /* Ensuring we have our fonts setup correctly */
@@ -44,19 +47,34 @@
   font-family: 'Rubik', sans-serif;
 }
 
+/* Body is styled so that the background doesn't scroll but then... */
 body {
     margin: 0;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;      
     justify-content: flex-start; 
-    min-height: 100%;
-    /* background: var(--greyBlue); */
     background-image: url(../images/Background.svg);
-    background-size:cover;
-    background-repeat: repeat-y;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     background-position: center top;
 }
+
+/* Scrollable wrapper within the body */
+.page-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--topbar-h);
+    padding-bottom: var(--bottombar-h);
+}
+
 
 h1, h2, h3 {
   font-family: 'Rubik', sans-serif;
@@ -125,9 +143,8 @@ p {
     display: flex;
     justify-content: center;
     align-items: center; 
-    height: 100vh;
     width: 100%;
-    margin-top: 30px;
+    /* margin-top: 90px; */
 }
 
 /* Profile View */
@@ -160,11 +177,11 @@ p {
 }
 
 .picture-profile {
-    /* background-color: red; */
-    width: 105px;
-    height: 105px;
+    aspect-ratio: 1 / 1;
+    width: 95px;
+    height: 95px;
     object-fit: cover;
-    border-radius: 100%;
+    border-radius: 50%;
     border-style: solid;
     border-color: var(--lightBlue);
     border-width: 2px;
@@ -519,7 +536,17 @@ p {
     width: 100%;    
     z-index: 1000;
     box-shadow: rgba(66, 191, 221, 0.1) 0px 10px 50px; 
-    
+}
+
+.navbar-holder::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to top, rgba(8, 75, 131, 0.1), rgba(8, 75, 131, 0));
+    pointer-events: none;
 }
 
 .navbar {
@@ -720,24 +747,18 @@ p {
     border-bottom: 2px solid var(--lightBlue);
     border-radius: var(--buttonBorderRadius);
     box-shadow: var(--windowBoxShadow);
-    margin-bottom: 15px;
-    overflow: hidden;
-    position: relative;
-    overflow-y: auto;
-    max-height: 750px;
     box-sizing: border-box;
 }
 
-/* Internal bottom shadow effect */
-.window-Message::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 30px;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(8, 75, 131,0), rgba(8, 75, 131,0.1));
+.message-scroll-area {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    padding-right: 30px;
 }
 
 .single-border-Messaging {
@@ -749,18 +770,6 @@ p {
     margin-top: 8px;
 }
 
-.message-scroll-area {
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 100%;
-    padding: 15px;
-    padding-right: 30px;
-}
-
 .single-contact-Messaging {
     /* max-width: 420px; */
     /* width: 100%; */
@@ -769,7 +778,6 @@ p {
     /* background-color: var(--myWhite); */
 
 }
-
 
 .picture-profile-Message {
     width: 60px;
@@ -852,7 +860,7 @@ p {
 }
 
 .captionField-AddPost {
-    margin-top: 25px;
+    /* margin-top: 25px; */
     width: 380px;
     resize:none;
     text-align: left;
@@ -921,4 +929,76 @@ p {
     display: block;
     color: var(--accentPink);
     margin-bottom: 5px;
+}
+
+/* Image Preview on AddPost Page */
+#preview {
+  display: none;
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+.image-holder-AddPost {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.image-AddPost {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.image-holder-profilePicturePreview {
+    display: flex;
+    justify-content: center;
+    /* margin-bottom: 10px; */
+}
+
+.image-profilePicturePreview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.positive-feedback-message-holder {
+    text-align: center;
+    width: 300px;
+    padding: 20px;
+    color: var(--lightBlue);
+    border-color: rgb(45, 176, 88);
+    color: rgb(45, 176, 88);
+    background-color: rgb(207, 246, 222);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: var(--buttonBorderRadius);
+    margin-bottom: 20px;
+}
+
+.negative-feedback-message-holder {
+    text-align: center;
+    width: 300px;
+    padding: 20px;
+    color: var(--lightBlue);
+    border-color: rgb(203, 30, 48);
+    color: rgb(203, 30, 48);
+    background-color: rgb(246, 207, 207);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: var(--buttonBorderRadius);
+    margin-bottom: 20px;
+}
+
+.feedback-heading {
+    font-family: var(--logoFont);
+    display: block;
+    margin-bottom: 5px;
+    margin-right: 8px;
+}
+
+.feedback-message {
+    font-size: var(--fontText);
+    display: inline;
 }

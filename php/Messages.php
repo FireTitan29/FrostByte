@@ -4,7 +4,6 @@
         <span class="mainHeading-Form">
             <span class="accentColor">Messages</span>
         </span><br>
-        <!-- Little Gap -->
         <p style="margin-bottom: 20px;"></p>
         
         <div class="searchWrapper">
@@ -15,6 +14,7 @@
         </div>
     </div>
     <div class="message-scroll-area">
+        <?php include 'SingleMessage.php'; ?>
         <?php include 'SingleMessage.php'; ?>
         <?php include 'SingleMessage.php'; ?>
         <?php include 'SingleMessage.php'; ?>

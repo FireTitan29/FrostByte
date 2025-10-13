@@ -1,0 +1,18 @@
+# Ignore uploads folder (user images, profile pics, posts)
+uploads/
+
+# But keep the folder itself visible in Git
+!uploads/.gitkeep
+
+# Ignore system/OS junk
+.DS_Store
+Thumbs.db
+
+# Ignore logs and cache
+*.log
+cache/
+tmp/
+
+# Ignore IDE/editor settings
+.vscode/
+

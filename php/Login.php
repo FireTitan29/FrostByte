@@ -1,3 +1,12 @@
+<?php if (isset($_GET['signup'])): ?>
+    <?php if ($_GET['signup'] === 'success'): ?>
+        <div class="positive-feedback-message-holder">
+            <h3 class="feedback-heading">🍦 Sign Up Successful!</h3>
+            <p class="feedback-message">Login to get to cool</p>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
 <div class="mainForm-Holder">
     <form class="window-Form" method="POST">
         <h3 class="mainHeading-Form"><span class="accentColor">Login</span> to FrostByte</h3>
@@ -15,4 +24,5 @@
         <span style="margin-bottom: 15px; display:block;"></span>
     </form>
 </div>
+
 
