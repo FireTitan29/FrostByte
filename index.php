@@ -22,7 +22,7 @@
         logout();
     }
 
-    $sessionActive = isset($_SESSION['user_id']);
+    $sessionActive = isset($_SESSION['user']);
 
     // Handle redirects BEFORE output (on the cpanel, it won't let me change
     // the header after html elements have landed on the page, so we'll handle
@@ -177,7 +177,7 @@
 
             $stmt->execute();
 
-            header("Location: index.php?view=login");
+            header("Location: index.php?view=login&signup=success");
             exit;
         }
     }
@@ -205,11 +205,14 @@
         {
             $user = getUserDetails($email);
 
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email']   = $user['email'];
-            $_SESSION['firstname'] = $user['firstname'];
-            $_SESSION['surname']   = $user['surname'];
-            $_SESSION['gender']   = $user['gender'];
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'email' => $user['email'],
+                'firstname' => $user['firstname'],
+                'surname' => $user['surname'],
+                'gender' => $user['gender'],
+                'profile_pic' => $user['profile_pic'],       
+            ];
 
             // Redirect to timeline after login has been successful
             header("Location: index.php?view=timeline");
@@ -217,7 +220,46 @@
         }
     }
 
+    // Reset Password Form
+    if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'passwordreset') {
+        // Getting all of the values that have been posted through the form
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+        $passwordReType = trim($_POST['passwordretype'] ?? '');
 
+        // Form validation
+        // Validating the email using the built in method, and then also using our custom function to check the db
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
+        else if (!checkEmailExists($email)) $errors["email"] = "User does not exist";
+
+        if ($password === '' || $passwordReType === '') {
+            $errors["password"] = "Fields cannot be left empty";
+        } else if ($password !== $passwordReType) {
+            $errors["password"] = "Passwords do not match";
+        }
+
+        // if there are no errors, add user info to DB, then redirect to login page
+        if (empty($errors)) { 
+
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            // connecting to the DB
+            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+
+            // update using placeholder
+            $stmt = $pdo->prepare('UPDATE users SET password = :password WHERE email = :email');
+
+            // stopping SQL injection
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':password', $hashedPassword);
+
+            $stmt->execute();
+
+            header("Location: index.php?view=login&reset=success");
+            exit;
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -250,6 +292,8 @@
         } else {
             if ($view === 'signup') {
                 include 'php/SignUp.php';
+            } else if ($view === 'passwordreset') {
+                include 'php/PasswordReset.php';  
             } else {
                 include 'php/Login.php';
             }

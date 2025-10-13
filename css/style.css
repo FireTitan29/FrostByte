@@ -25,7 +25,7 @@
     
     /* Button Styles */
     --buttonBorderStyle: none;
-    --buttonPadding: 8px 80px 8px 80px;
+    --buttonPadding: 8px 60px 8px 60px;
     --buttonBorderRadius: 3px;
     --transtionTime: 0.2s ease;
     

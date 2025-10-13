@@ -1,6 +1,6 @@
 <div class="window-Profile">
     <div class="mainBlock-Post">
-        <img class="smallProfileIcon-Post" src="icons/profile-picture-none.svg" alt="PostIcon">
+        <img class="smallProfileIcon-Post" src="<?php echo $_SESSION['user']['profile_pic'] ?>" alt="PostIcon">
         <div>
             <p class="userName-Post"><?php echo $userName?></p>
             <p class="post-Text"><?php echo $caption?></p>

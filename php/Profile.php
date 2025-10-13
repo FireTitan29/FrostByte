@@ -1,6 +1,6 @@
 <div class="window-Profile">
     <div class="picture-info-Profile">
-        <img class="picture-profile" src="icons/profile-picture-none.svg" alt="profile-picture">
+        <img class="picture-profile" src="<?php echo $_SESSION['user']['profile_pic'] ?>" alt="profile-picture">
         <div class="name-bio-Profile">
             <div class="top-holder-Profile">
                 <div class="user-info">
@@ -9,7 +9,6 @@
                 </div>
                 <div class="settings-holder">
                     <button class="button-Profile settings-button"><img src="icons/Settings.svg" alt="Settings" class="settings-icon"></button>
-                    <!-- <a class="settingsText-Profile" href="">Settings</a> -->
                 </div>
             </div>
             <p class="bio-Profile">Hello this is my bio and I am very excited to be doing this! This is my profile, thank you a very much!</p>
