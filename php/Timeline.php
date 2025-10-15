@@ -1,7 +1,12 @@
-  <?php includePost('Tyler Duggan','test-image.jpg', 'Very excited to see if this will work, I guess we shall find out!', 3) ?>
-  <?php includePost('Tyler Duggan','test-image-2.jpg', 'Yay, this tastes great! Super nice!', 14) ?>
-  <?php includePost('Tyler Duggan','test-image-3.jpg', 'Another day, another icecream... this is great!', 1) ?>
-  <?php includePost('Tyler Duggan','test-image-4.jpg', 'Full of ice cream now... no more dairy!', 8) ?>
-  <?php includePost('Tyler Duggan','', 'I ran out of stuff to say', 0) ?>
 
+<!-- A little animated greeting to cheer up the user -->
+<div class="timeline-div">
+<h3 class="welcome-message"><span class="hand-wave">👋</span> Welcome, <?php echo htmlspecialchars($_SESSION['user']['firstname'])?></h3>
+<p class="timeline-text">Let's see what everyone has been up to...</p>
+</div>
+
+<!-- Displaying all posts in the DB on the timeline -->
+<?php if(!findAndDisplayPosts()): ?>
+  <h3 class="noPosts-Text">No Posts Yet...</h3>
+<?php endif; ?> 
 

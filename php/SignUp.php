@@ -26,9 +26,12 @@
         <!-- Image Adding of Profile Picture -->
          <h3 class="subHeading-Form" style="margin-bottom: 0px;">Add a Profile Picture</h3>
         <small class="small-error-message"><?php if (isset($errors['image'])) echo $errors['image']; ?></small>
+        
+        <!-- Live Preview Image -->
         <div class="image-holder-AddPost">
             <img id="preview" src="" alt="Preview" class="image-profilePicturePreview">
         </div>
+
         <div class="linkDiv-Form">(Optional) Max 4MB</div>
         <span style="margin-bottom: 5px; display:block;"></span>
         <label class="custom-file-upload-AddPost">

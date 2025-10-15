@@ -149,8 +149,7 @@ p {
 
 /* Profile View */
 .window-Profile {
-    max-width: 430px;
-    /* width: 82%; */
+    width: 430px;
     padding: var(--windowPadding);
     padding-bottom: 0px;
     padding-left: 14px;
@@ -187,6 +186,17 @@ p {
     border-width: 2px;
 }
 
+.picture-profile-changed {
+    aspect-ratio: 1 / 1;
+    width: 95px;
+    height: 95px;
+    object-fit: cover;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: var(--accentPink);
+    border-width: 2px;
+}
+
 .name-bio-Profile {
     text-align: left;
     margin-left: 15px;
@@ -196,10 +206,10 @@ p {
     display: flex; 
     justify-content: space-between; 
     align-items: flex-start;
+    width: 316px;
 }
 
 .settings-button {
-    align-self: flex-start;
     margin-top: 8px;
     padding: 4px 3.5px 0px 3.5px;
     border-radius: 50%;
@@ -235,7 +245,7 @@ p {
     font-size: var(--fontSmallMedium);
     color: var(--lightBlue);
     margin-top: 12px;
-    margin-right: 2px;
+    margin-right: 5px;
     text-align: center;
     transition: var(--transtionTime);
     text-decoration: none;
@@ -243,7 +253,7 @@ p {
 
 
 .username-Profile {
-    display: block;
+    display: inline;
     margin: 0;              
     padding-top: 6px;
     font-size: var(--fontMedium);
@@ -255,6 +265,12 @@ p {
 .email-Profile {
     font-size: var(--fontSmallMedium);
     color: var(--lightBlue);
+}
+
+.gender-Profile {
+    font-size: var(--fontSmallMedium);
+    color: var(--lightBlue);
+    margin-left: 3px;
 }
 
 .bio-Profile {
@@ -373,7 +389,7 @@ p {
 
 
 /* Light Animation for the user to see they are interacting with the website */
-.textInput-Form:focus, .captionField-AddPost:focus  {
+.textInput-Form:focus, .captionField-AddPost:focus, .username-Profile-edit:focus, .bio-Profile-edit:focus {
     outline: none;             
     border-color: var(--accentPink);
     box-shadow: none;
@@ -395,6 +411,7 @@ p {
   border-color: var(--lightBlue);
   color: var(--lightBlue);
 }
+
 
 .forgotPassword-Form {
     color: var(--accentPink);
@@ -623,11 +640,17 @@ p {
     border-bottom-style: solid;
     border-color: var(--lightBlue);
     box-shadow: var(--windowBoxShadow);
-    /* ! For now */
-    /* margin-bottom: 50px; */
 }
 
 /* !Images on Profile for Post History */
+
+.noPosts-Text {
+    font-family: var(--logoFont);
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: var(--darkBlue);
+    font-size: var(--fontMedium);
+}
 
 .mainBlock-Post {
     display: flex;
@@ -662,8 +685,9 @@ p {
 }
 
 .post-image-Profile {
-    width: 400px;
+    width: 375px;
     height: 215px;
+    aspect-ratio: 4/3;
     object-fit: cover;
     border-radius: var(--buttonBorderRadius);
     padding-bottom: 4px;
@@ -931,6 +955,12 @@ p {
     margin-bottom: 5px;
 }
 
+.small-error-message-profile {
+    display: inline;
+    color: var(--accentPink);
+    margin-bottom: 5px;
+}
+
 /* Image Preview on AddPost Page */
 #preview {
   display: none;
@@ -945,8 +975,9 @@ p {
 }
 
 .image-AddPost {
-    width: 300px;
-    height: 300px;
+    width: 375px;
+    height: 215px;
+    aspect-ratio: 4/3;
     object-fit: cover;
 }
 
@@ -1001,4 +1032,143 @@ p {
 .feedback-message {
     font-size: var(--fontText);
     display: inline;
+}
+
+/* Editing the Profile Styling */
+.bio-Profile-edit {
+    margin-top: 5px;
+    width: 295px;
+    resize:none;
+    text-align: left;
+    color: var(--darkBlue);
+    font-size: var(--fontText);
+    border: none;
+    border-bottom-style: solid;
+    border-color: var(--darkBlue);
+    border-radius: var(--buttonBorderRadius);
+    padding: var(--inputPadding);
+    border-width: 2px;
+    transition: var(--transtionTime);
+}
+
+.username-Profile-edit {
+    display: inline;
+    margin: 0;     
+    padding-top: 5px;         
+    padding-bottom: 5px;         
+    padding-left: 5px;         
+    font-size: var(--fontMedium);
+    color: var(--accentPink);
+    font-weight: bolder;
+    align-self: flex-start;
+    border: none;
+    border-bottom-style: solid;
+    border-color: var(--darkBlue);
+    border-radius: var(--buttonBorderRadius);
+    /* padding: var(--inputPadding); */
+    border-width: 2px;
+    transition: var(--transtionTime);
+    margin-bottom: 5px;
+    width: 110px;
+    font-size: var(--fontMedium);
+}
+
+.username-Profile-edit::placeholder {
+    color: var(--greyBlue);
+    font-weight: normal;
+    font-size: var(--fontText);
+}
+
+.profile-picture-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Hidden text overlay on the profile picture
+so that we can make it look like a button the user can click with instructions */
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(8, 75, 131, 0.6);
+    color: var(--myWhite);
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.overlay-text-preview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(8, 75, 131, 0.6);
+    color: var(--myWhite);
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    display: none;
+}
+
+/* Show text on hover */
+.profile-picture-wrapper:hover .overlay-text {
+    opacity: 1;
+}
+
+/* Show text on hover */
+.profile-picture-wrapper:hover .overlay-text-preview {
+    opacity: 1;
+}
+
+.timeline-div {
+    padding: 5px 15px 5px 15px;
+    background-color: var(--myWhite);
+    margin-bottom: 25px;
+    border-radius: var(--buttonBorderRadius);
+    text-align: center;
+    border: none;
+    border-bottom-style: solid;
+    border-color: var(--lightBlue);
+    box-shadow: var(--windowBoxShadow);
+}
+
+.welcome-message {
+    font-family: var(--logoFont);
+    margin-top: 10px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+    color: var(--lightBlue);
+    font-size: var(--fontMedium);
+}
+
+.timeline-text {
+    color: var(--darkBlue);
+    font-size: var(--fontText);
+    margin-top: 5px;
+}
+
+/* Animating the hand to wave to the user */
+@keyframes shake {
+    0% { transform: rotate(0deg); }
+    5% { transform: rotate(-10deg); }
+    10% { transform: rotate(10deg); }
+    15% { transform: rotate(-10deg); }
+    20% { transform: rotate(10deg); }
+    25% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.hand-wave {
+    display: inline-block;
+    animation: shake 4s infinite;
 }
