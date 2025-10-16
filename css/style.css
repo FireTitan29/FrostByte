@@ -149,6 +149,7 @@ p {
 
 /* Profile View */
 .window-Profile {
+    scroll-margin-top: 100px;
     width: 430px;
     padding: var(--windowPadding);
     padding-bottom: 0px;

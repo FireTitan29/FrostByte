@@ -30,6 +30,7 @@
                     include "php/Messages.php";
                 } else {
                     include "php/Timeline.php";
+                    echo '<script src="js/like_post_listener.js"></script>';
                 }  
             } else {
                 if ($view === 'signup') {
@@ -51,4 +52,5 @@
     <?php if ($view == 'addpost' || $view = 'signup' || $view === 'profile'): ?>
         <script src="js/live_image_viewer.js"></script>
     <?php endif; ?>
+
 </body>

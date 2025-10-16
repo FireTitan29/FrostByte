@@ -37,12 +37,100 @@
         }
     }
 
+    // -----------------------------------------------------------
+    // DATABASE FUNCTIONS:
+
+    // Because I am going to be connecting to the DB a lot, I wrote this to speed
+    // that process up a bit, and make the code easier to read.
+    // All this does it connect to the database, and then return the $pdo if
+    // the connection was successful. Otherwise it shoots out an error message
+    function connectToDatabase() {
+        try {
+            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            return $pdo;
+        } catch (PDOException $e) {
+            die("Connection to the DB failed, here's why: " . $e->getMessage());
+        }
+    }
+
+    // This function adds the posts to the DB using a SQL insert
+    function addPostToDB($caption, $imagePath = '') {
+        // connecting to the DB
+        $pdo = connectToDatabase();
+
+        $stmt = $pdo->prepare(
+        'INSERT INTO posts (user_id, caption, image_path)
+        VALUES (:user_id, :caption, :image_path)');
+
+        // stopping SQL injection
+        $stmt->bindValue(':user_id', $_SESSION['user']['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':caption', $caption, PDO::PARAM_STR);
+        $stmt->bindValue(':image_path', $imagePath, PDO::PARAM_STR);
+        
+        $stmt->execute();
+    }
+
+    // -----------------------------------------------------------
+    // GENERAL FUNCTIONS:
+
     // this function makes sure the icons change color by checking what
     // "view" (page) is selected in the URL
     function selectNavigationIcon($iconName) {
         $view = $_GET['view'] ?? '';
         if ($iconName === $view) echo "checked";
         return;
+    }
+
+    // Getting User Details using their email
+    function getUserDetailsEmail($email) {
+
+        $pdo = connectToDatabase();
+        
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = :email');
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user;
+    }
+
+    // Getting a user's details using their user ID
+    function getUserDetailsID($user_id) {
+
+        $pdo = connectToDatabase();
+        
+        $stmt = $pdo->prepare('SELECT firstname, surname, gender, profile_pic, profile_bio FROM users WHERE id = :user_id');
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user;
+    }
+
+    function createFileDirectory($filePath, $fileName, $parentFolder, $prefix, $folderName = '') {
+        $dir = __DIR__ . $filePath;
+        
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+            // Trying to fix permissions, so I am forcing them
+            chmod($dir, 0777);
+        } 
+
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $newName = uniqid($prefix, true) . '.' . $ext;  
+        $destPath = '';
+
+        // if the folder name is blank, then it doesn't create a specific folder
+        if ($folderName === '') {
+            $destPath = "uploads/$parentFolder/$newName";
+        } else {          
+            $destPath = "uploads/$parentFolder/$folderName/$newName";
+        }
+        
+        $fullPath = $dir . "/" . $newName;
+
+        return ["Destination_Path" => $destPath, 
+                "Full_Path" => $fullPath ];
     }
 
     // -----------------------------------------------------------
@@ -69,8 +157,7 @@
     // this function ensures that the email the user is signing up with is unique
     function checkEmailExists($email) {
             // connecting to the DB
-            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+            $pdo = connectToDatabase();
 
             $stmt = $pdo->prepare('SELECT email FROM users WHERE email = :email LIMIT 1');
             $stmt->bindValue(':email', $email);
@@ -85,8 +172,7 @@
 
     function checkPasswordIsCorrect($password, $email) {
         // connecting to the DB
-        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+        $pdo = connectToDatabase();
 
         $stmt = $pdo->prepare('SELECT password FROM users WHERE email = :email LIMIT 1');
         $stmt->bindValue(':email', $email);
@@ -95,6 +181,14 @@
         
         // if the password is correct, then we return true, otherwise they aren't the same
         return (bool) password_verify($password, $pass_hash);
+    }
+
+    function validatePasswords($password, $passwordReType, &$errors) {
+        if ($password === '' || $passwordReType === '') {
+            $errors["password"] = "Fields cannot be left empty";
+        } else if ($password !== $passwordReType) {
+            $errors["password"] = "Passwords do not match";
+        }
     }
 
     // function for validating files, reused for all file uploads of images
@@ -147,49 +241,39 @@
         return true;
     }
 
-    function addPostToDB($caption, $imagePath = '') {
-        // connecting to the DB
-        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+    // Made SignUp & Login Form validations into it's own function to improve readbility of the
+    // SERVER REQUEST === POST sections
+    function validateSignUp($name, $surname, $email, $gender, $password, $passwordReType, &$errors) {
+        // Form validation
+        validateString($name, 'firstname', $errors);
+        validateString($surname, 'surname', $errors);
 
-        $stmt = $pdo->prepare(
-        'INSERT INTO posts (user_id, caption, image_path)
-        VALUES (:user_id, :caption, :image_path)');
+        // Validating the email using the built in method, and then also using our custom function to check the db
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
+        else if (checkEmailExists($email)) $errors["email"] = "Email is already in use by another user";
 
-        // stopping SQL injection
-        $stmt->bindValue(':user_id', $_SESSION['user']['id'], PDO::PARAM_INT);
-        $stmt->bindValue(':caption', $caption, PDO::PARAM_STR);
-        $stmt->bindValue(':image_path', $imagePath, PDO::PARAM_STR);
-        
-        $stmt->execute();
+        if ($gender === '') $errors['gender'] = 'Please select an option';
+
+        validatePasswords($password, $passwordReType, $errors);
+
+        // Validating Profile Picture if user has uploaded something
+        if (!empty($_FILES['image']['name'])) {
+            if ($_FILES['image']['error'] === UPLOAD_ERR_OK)
+            {
+                // getting all of the file details
+                $fileTempPath = $_FILES['image']['tmp_name'];
+                $fileName = $_FILES['image']['name'];
+                $fileSize = $_FILES['image']['size'];
+
+                // Using the function we made to validate the file
+                validateFile($fileName, $fileTempPath, $fileSize, $errors);
+
+            } else {
+                $errors['image'] = "Error during file upload.";
+            }
+        }
     }
 
-    // Getting User Details using their email
-    function getUserDetails($email) {
-        // connecting to the DB
-        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
-        
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = :email');
-        $stmt->bindValue(':email', $email);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $user;
-    }
-
-    // Getting a user's details using their user ID
-    function getUserDetailsID($user_id) {
-        // connecting to the DB
-        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
-        
-        $stmt = $pdo->prepare('SELECT firstname, surname, gender, profile_pic, profile_bio FROM users WHERE id = :user_id');
-        $stmt->bindValue(':user_id', $user_id);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user;
-    }
 
     // -----------------------------------------------------------
     // FORMS:
@@ -212,38 +296,8 @@
         $password = trim($_POST['password'] ?? '');
         $passwordReType = trim($_POST['passwordretype'] ?? '');
 
-        // Form validation
-        validateString($name, 'firstname', $errors);
-        validateString($surname, 'surname', $errors);
-
-        // Validating the email using the built in method, and then also using our custom function to check the db
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
-        else if (checkEmailExists($email)) $errors["email"] = "Email is already in use by another user";
-
-        if ($gender === '') $errors['gender'] = 'Please select an option';
-        if ($password === '' || $passwordReType === '') {
-            $errors["password"] = "Fields cannot be left empty";
-        } else if ($password !== $passwordReType) {
-            $errors["password"] = "Passwords do not match";
-        }
-
-        // Validating Profile Picture if user has uploaded something
-        if (!empty($_FILES['image']['name'])) {
-            if ($_FILES['image']['error'] === UPLOAD_ERR_OK)
-            {
-                // getting all of the file details
-                $fileTempPath = $_FILES['image']['tmp_name'];
-                $fileName = $_FILES['image']['name'];
-                $fileSize = $_FILES['image']['size'];
-                $fileType = $_FILES['image']['type'];
-
-                // Using the function we made to validate the file
-                validateFile($fileName, $fileTempPath, $fileSize, $errors);
-
-            } else {
-                $errors['image'] = "Error during file upload.";
-            }
-        }
+        // Validating through the function I wrote
+        validateSignUp($name, $surname, $email, $gender, $password, $passwordReType, $errors);
 
         // if there are no errors, add user info to DB, then redirect to login page
         if (empty($errors)) {
@@ -255,54 +309,45 @@
             if (!empty($_FILES['image']['name'])) {  
 
                 $fileExists = true;
-
-                // Making sure the directory exists,
-                // and if not making the directory with the correct
-                // permissions in place
-                $dir = __DIR__ . "/uploads/profilepictures/";
+                $fileTempPath = $_FILES['image']['tmp_name'];
+                $fileName     = $_FILES['image']['name'];
+                $fileSize     = $_FILES['image']['size'];
                 
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0777, true);
-                } 
-
-                $userSurname = $surname;
-    
-                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    
-                // Generating a new Name for the image
-                $newName    = $email . '.' . $ext;
-                $destPath = "uploads/profilepictures/$newName";
-                
-                $fullPath = $dir . "/" . $newName;
+                $dirArray = createFileDirectory("/../uploads/profilepictures", $fileName, "profilepictures", "img_$surname");
 
                 // Finally, moving everything into the correct file destination
                 // and also adding it to the DB
-                move_uploaded_file($fileTempPath, $fullPath);
+                $destPath = $dirArray['Destination_Path'];
+                $fullPath = $dirArray['Full_Path'];
+
+                if (!move_uploaded_file($fileTempPath, $fullPath)) {
+                    $errors['image'] = "File upload failed. Please check folder permissions.";
+                }
             }
+                // Only proceed if image move succeeded further
+                if (empty($errors)) {
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                // connecting to the DB
+                $pdo = connectToDatabase();
 
-            // connecting to the DB
-            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
-            $stmt = '';
+                // insert using placeholder
+                $stmt = $pdo->prepare(
+                'INSERT INTO users (email, firstname, surname, gender, password, profile_pic)
+                VALUES (:email, :firstname, :surname, :gender, :password, :profile_pic)');
 
-            // insert using placeholder
-            $stmt = $pdo->prepare(
-            'INSERT INTO users (email, firstname, surname, gender, password, profile_pic)
-            VALUES (:email, :firstname, :surname, :gender, :password, :profile_pic)');
+                // stopping SQL injection
+                $stmt->bindValue(':email', $email);
+                $stmt->bindValue(':firstname', $name);
+                $stmt->bindValue(':surname', $surname);
+                $stmt->bindValue(':gender', $gender);
+                $stmt->bindValue(':password', $hashedPassword);
+                $stmt->bindValue(':profile_pic', $destPath);
 
-            // stopping SQL injection
-            $stmt->bindValue(':email', $email);
-            $stmt->bindValue(':firstname', $name);
-            $stmt->bindValue(':surname', $surname);
-            $stmt->bindValue(':gender', $gender);
-            $stmt->bindValue(':password', $hashedPassword);
-            $stmt->bindValue(':profile_pic', $destPath);
-
-            $stmt->execute();
-            header("Location: index.php?view=login&signup=success");
-            exit;
+                $stmt->execute();
+                header("Location: index.php?view=login&signup=success");
+                exit;
+            }
         }
     }
 
@@ -327,7 +372,7 @@
         // except for the password of course, and then we go to the timeline
         if (empty($errors))
         {
-            $user = getUserDetails($email);
+            $user = getUserDetailsEmail($email);
 
             $_SESSION['user'] = [
                 'id' => $user['id'],
@@ -358,11 +403,7 @@
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
         else if (!checkEmailExists($email)) $errors["email"] = "User does not exist";
 
-        if ($password === '' || $passwordReType === '') {
-            $errors["password"] = "Fields cannot be left empty";
-        } else if ($password !== $passwordReType) {
-            $errors["password"] = "Passwords do not match";
-        }
+        validatePasswords($password, $passwordReType, $errors);
 
         // if there are no errors, add user info to DB, then redirect to login page
         if (empty($errors)) { 
@@ -370,8 +411,7 @@
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             // connecting to the DB
-            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+            $pdo = connectToDatabase();
 
             // update using placeholder
             $stmt = $pdo->prepare('UPDATE users SET password = :password WHERE email = :email');
@@ -411,7 +451,6 @@
                 $fileTempPath = $_FILES['image']['tmp_name'];
                 $fileName = $_FILES['image']['name'];
                 $fileSize = $_FILES['image']['size'];
-                $fileType = $_FILES['image']['type'];
 
                 // Using the function we made to validate the file
                 validateFile($fileName, $fileTempPath, $fileSize, $errors);
@@ -436,19 +475,12 @@
                 // and if not making the directory with the correct
                 // permissions in place
                 $folderName = $_SESSION['user']['email'];
-                $dir = __DIR__ . "/../uploads/posts/$folderName";
                 
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0777, true);
-                    // Trying to fix permissions, so I am forcing them
-                    chmod($dir, 0777);
-                } 
+                $dirArray = createFileDirectory("/../uploads/posts/$folderName", $fileName, "posts", "post_", $folderName);
 
-                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $newName = uniqid("post_", true) . '.' . $ext;  
 
-                $destPath = "uploads/posts/$folderName/$newName";
-                $fullPath = $dir . "/" . $newName;
+                $destPath = $dirArray['Destination_Path'];
+                $fullPath = $dirArray['Full_Path'];
 
                 // Finally, moving everything into the correct file destination
                 // and also adding it to the DB
@@ -458,10 +490,12 @@
                     chmod($fullPath, 0644);
                     header("Location: index.php?view=addpost&post=success");
                     exit;
+
                 } else {
                     header("Location: index.php?view=addpost&post=failed");
                     exit;
                 }
+
             } else {
                 addPostToDB($caption);
                 header("Location: index.php?view=addpost&post=success");
@@ -520,24 +554,10 @@
                 // Making sure the directory exists,
                 // and if not making the directory with the correct
                 // permissions in place
-                $dir = __DIR__ . "/../uploads/profilepictures";
-
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0777, true);
-                    // Trying to fix permissions, so I am forcing them
-                    chmod($dir, 0777);
-                } 
-
-                $userSurname = $surname;
-    
-                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    
-                // Generating a new Name for the image
-                $newName    = uniqid("img_$userSurname", true) . '.' . $ext;
-
+                $dirArray = createFileDirectory("/../uploads/profilepictures", $fileName, "profilepictures", "img_$surname");
                 
-                $destPath = "uploads/profilepictures/$newName";
-                $fullPath = $dir . "/" . $newName; 
+                $destPath = $dirArray['Destination_Path'];
+                $fullPath = $dirArray['Full_Path']; 
 
                 // Delete old profile pic and making sure not to delete the placeholder icon
                 $oldPic = $_SESSION['user']['profile_pic'];
@@ -553,16 +573,16 @@
                 if (!move_uploaded_file($fileTempPath, $fullPath)) {
                     $errors['image'] = "File upload failed. Please check folder permissions.";
                 }
+                // Permissions change on the path
+                chmod($fullPath, 0644);
             }
 
             // connecting to the DB
-            $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
-            $stmt = '';
+            $pdo = connectToDatabase();
 
             // insert using placeholder
             $stmt = $pdo->prepare('UPDATE users 
-                        SET firstname = :firstname, 
+                            SET firstname = :firstname, 
                             surname = :surname, 
                             profile_pic = :profile_pic, 
                             profile_bio = :profile_bio
@@ -579,7 +599,7 @@
             $stmt->execute();
 
             // Reloading all new details into the session
-            $user = getUserDetails($_SESSION['user']['email']);
+            $user = getUserDetailsEmail($_SESSION['user']['email']);
 
             $_SESSION['user'] = [
                 'id' => $user['id'],
@@ -596,13 +616,101 @@
             exit;
         }
     }
+
+    // What happens when a post is liked... I used a simple post method.
+    // after the likes are updated, the page reloads. This function works by
+    // connecting to the DB, fetching the like counter associated with the post_id
+    // and then increments it by +1, and then sends to back to the DB, but only if
+    // the user hasn't like the post previously.
+
+    if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'timeline') {
+        $pdo = connectToDatabase();
+
+        $post_id = $_POST['like-button-id'];
+        $user_id = $_SESSION['user']['id'];
+        // Selecting from the post_likes table so that we can
+        // check if this user already liked this post
+        $stmt = $pdo->prepare('SELECT * FROM post_likes WHERE post_id = :post_id AND user_id = :user_id');
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        $result = $stmt->fetch();
+
+        // If the post has not be liked before
+        if (!$result) {
+            // Selecting from the posts table
+            $stmt = $pdo->prepare('SELECT likes FROM posts WHERE post_id = :post_id LIMIT 1');
+            $stmt->bindValue(':post_id', $post_id);
+
+            $stmt->execute();
+
+            $currentLikes = $stmt->fetchColumn();
+
+            $newLikes = $currentLikes+1;
+
+            // updating the posts table
+            $stmt = $pdo->prepare('UPDATE posts SET likes = :newLikes WHERE post_id = :post_id');
+            $stmt->bindValue(':post_id', $post_id);
+            $stmt->bindValue(':newLikes', $newLikes);
+            $stmt->execute();
+
+            // Updating the likes table
+            $stmt = $pdo->prepare('INSERT INTO post_likes (post_id, user_id) VALUES (:post_id, :user_id)');
+            $stmt->bindValue(':post_id', $post_id);
+            $stmt->bindValue(':user_id', $user_id);
+            $stmt->execute();
+        } else {
+            // This will remove the like if the like button is selected again (basically if a user unlikes a post)
+            // Selecting from the posts table
+            $stmt = $pdo->prepare('SELECT likes FROM posts WHERE post_id = :post_id LIMIT 1');
+            $stmt->bindValue(':post_id', $post_id);
+
+            $stmt->execute();
+
+            $currentLikes = $stmt->fetchColumn();
+
+            $newLikes = $currentLikes-1;
+
+            // updating the posts table
+            $stmt = $pdo->prepare('UPDATE posts SET likes = :newLikes WHERE post_id = :post_id');
+            $stmt->bindValue(':post_id', $post_id);
+            $stmt->bindValue(':newLikes', $newLikes);
+            $stmt->execute();
+
+            // Updating the likes table to remove the like
+            $stmt = $pdo->prepare('DELETE FROM post_likes WHERE post_id = :post_id AND user_id = :user_id');
+            $stmt->bindValue(':post_id', $post_id);
+            $stmt->bindValue(':user_id', $user_id);
+            $stmt->execute();
+        }
+
+        header("Location: index.php?view=timeline#post-$post_id");
+        exit;
+
+    }
     // -----------------------------------------------------------
     // POSTS:
 
+    function didUserLike($user_id, $post_id) {
+        $pdo = connectToDatabase();
+        $stmt = $pdo->prepare('SELECT 1 FROM post_likes WHERE post_id = :post_id AND user_id = :user_id LIMIT 1');
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->bindValue(':user_id', $user_id);
+
+        $stmt->execute();
+        $result =  $stmt->fetchColumn();
+        if (!$result) {
+            return false;
+        }
+            return true;
+
+    }
+
     // this function includes a post depending on whether it has an image
     // or not. It puts it in the correct format.
-    function includePost($userName, $profilePicture, $timeStamp ,$imageName = '', $caption = '', $likesCount = 0) {
-
+    function includePost($userName, $profilePicture, $timeStamp, $post_id ,$imageName = '', $caption = '', $likesCount = 0) {
+        $likeBool = didUserLike($_SESSION['user']['id'], $post_id);
         if ($imageName === '') {
             include "php/PostText.php";
         } else {
@@ -616,8 +724,7 @@
     {
 
         // connecting to the DB
-        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ]);
+        $pdo = connectToDatabase();
         
         // This is the part where we see if we are on the timeline (select *), or on the user's profile (select where user_id))
         $stmt = '';   
@@ -631,6 +738,7 @@
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        
         // After we fetch them all, only if there are posts to be displayed, do we display them
         // otherwise we return false
         if (sizeof($result) > 0) {
@@ -638,7 +746,7 @@
             foreach ($result AS $post) {
                 $user = getUserDetailsID($post['user_id']);
                 $fullName = $user['firstname'] . ' ' . $user['surname'];
-                includePost($fullName, $user['profile_pic'], $post['created_at'], $post['image_path'], $post['caption'], $post['likes']);
+                includePost($fullName, $user['profile_pic'], $post['created_at'], $post['post_id'], $post['image_path'], $post['caption'], $post['likes']);
             }
             return true;
         } else {
