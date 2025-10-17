@@ -382,7 +382,8 @@
                 'fullname' => $user['firstname'] . ' ' . $user['surname'],
                 'gender' => $user['gender'],
                 'profile_pic' => $user['profile_pic'],       
-                'profile_bio' => $user['profile_bio'],       
+                'profile_bio' => $user['profile_bio'],     
+                'theme' => $user['theme'],     
             ];
 
             // Redirect to timeline after login has been successful
@@ -610,6 +611,7 @@
                 'gender' => $user['gender'],
                 'profile_pic' => $user['profile_pic'],       
                 'profile_bio' => $user['profile_bio'],       
+                'theme' => $user['theme'],       
             ];
 
             header("Location: index.php?view=profile");
@@ -623,7 +625,7 @@
     // and then increments it by +1, and then sends to back to the DB, but only if
     // the user hasn't like the post previously.
 
-    if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'timeline') {
+    if ($_SERVER["REQUEST_METHOD"] === 'POST' && ($view === 'timeline' || $view === 'profile')) {
         $pdo = connectToDatabase();
 
         $post_id = $_POST['like-button-id'];
@@ -685,7 +687,7 @@
             $stmt->execute();
         }
 
-        header("Location: index.php?view=timeline#post-$post_id");
+        header("Location: index.php?view=$view#post-$post_id");
         exit;
 
     }
@@ -753,5 +755,4 @@
             return false;
         }
     }
-
 ?>

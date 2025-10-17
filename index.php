@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FrostByte: The Coolest Place</title>
 
-    <!-- Linking our CSS File in -->
+    <!-- Linking the CSS File in -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon.png">
 
@@ -22,6 +22,11 @@
         <!-- Login/SignUp Page -->
         <?php 
             if ($sessionActive) {
+                if (isset($_SESSION['user']['theme'])) {
+                    if ($_SESSION['user']['theme'] === 'dark') {
+                        echo '<script src="js/change_theme_dark.js"></script>';
+                    }
+                }
                 if ($view === 'profile') {
                     include "php/Profile.php";
                 } else if ($view === 'addpost') {
@@ -32,6 +37,7 @@
                     include "php/Timeline.php";
                     echo '<script src="js/like_post_listener.js"></script>';
                 }  
+
             } else {
                 if ($view === 'signup') {
                     include 'php/SignUp.php';
@@ -47,10 +53,12 @@
     </div>
 
     <!-- JavaScript -->
-     <!-- Live Image Viewers -->
-      <!-- SignUp & Add Post -->
-    <?php if ($view == 'addpost' || $view = 'signup' || $view === 'profile'): ?>
+    <!-- Live Image Viewers -->
+    <!-- SignUp & Add Post -->
+    <?php if ($view === 'addpost' || $view === 'signup' || $view === 'profile'): ?>
         <script src="js/live_image_viewer.js"></script>
     <?php endif; ?>
+
+    
 
 </body>

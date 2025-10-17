@@ -11,6 +11,8 @@
     --lightBlue: rgb(66, 191, 221);
     --greyBlue: rgb(187, 230, 228);
     --myWhite: rgb(240, 246, 246);
+    --background-image: url(../images/Background.svg);
+
     --accentPink: rgb(255, 102, 179);
     --accentPinkDark: rgb(255, 10, 120);
     --fontXLarge: 26px;
@@ -56,7 +58,7 @@ body {
     flex-direction: column;
     align-items: center;      
     justify-content: flex-start; 
-    background-image: url(../images/Background.svg);
+    background-image: var(--background-image);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -149,7 +151,7 @@ p {
 
 /* Profile View */
 .window-Profile {
-    scroll-margin-top: 100px;
+    scroll-margin-top: 40vh;
     width: 430px;
     padding: var(--windowPadding);
     padding-bottom: 0px;
@@ -1173,3 +1175,64 @@ so that we can make it look like a button the user can click with instructions *
     display: inline-block;
     animation: shake 4s infinite;
 }
+
+/* Settings Window */
+.settings-window {
+    width: 450px;
+    padding-bottom: 0px;
+    background-color: var(--lightBlue);
+    text-align: center;
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-style: solid;
+    border-color: var(--lightBlue);
+    border-radius: var(--buttonBorderRadius);
+    border-color: var(--lightBlue);
+    border-width: 2px;
+    margin-left: 5px;
+    /* Animation, start hidden in the profile block */
+    max-height: 0;
+    margin-bottom: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, margin-bottom 0.4s ease, opacity 0.4s ease;
+}
+
+/* Animation where it ends up after the settings appear */
+.settings-window.active {
+  max-height: 500px;
+  margin-bottom: 5px;
+  opacity: 1;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.settings-window-heading {
+    margin-top: 10px;
+    color: var(--myWhite);
+    font-size: var(--fontMedium);
+}
+
+.radio-holder-settings-form {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.mode-radio {
+    margin-top: 10px;
+}
+.radio-label-settings {
+    color: var(--myWhite);
+    font-weight: bold;
+    transition: var(--transtionTime) ease;
+}
+
+.radio-label-settings:hover {
+    color: var(--greyBlue);
+    cursor: pointer;
+}
+
