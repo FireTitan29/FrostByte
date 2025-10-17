@@ -741,6 +741,17 @@ p {
     transition: var(--transtionTime);
 }
 
+/* Animation when clicked */
+.like-Post.active {
+  animation: pop 0.4s ease forwards;
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 .like-Post:hover {
     cursor: pointer;
     transform: scale(1.1);
@@ -798,12 +809,7 @@ p {
 }
 
 .single-contact-Messaging {
-    /* max-width: 420px; */
-    /* width: 100%; */
-    /* padding: var(--windowPadding); */
     padding-bottom: 0px;
-    /* background-color: var(--myWhite); */
-
 }
 
 .picture-profile-Message {
@@ -1190,6 +1196,7 @@ so that we can make it look like a button the user can click with instructions *
     border-color: var(--lightBlue);
     border-width: 2px;
     margin-left: 5px;
+
     /* Animation, start hidden in the profile block */
     max-height: 0;
     margin-bottom: 0;

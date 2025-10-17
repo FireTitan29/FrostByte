@@ -10,3 +10,4 @@
   <h3 class="noPosts-Text">No Posts Yet...</h3>
 <?php endif; ?> 
 
+<script src="js/like_post.js"></script>

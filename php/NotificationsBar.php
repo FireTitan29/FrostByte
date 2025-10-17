@@ -1,3 +1,4 @@
+<?php if ($sessionActive): ?>; 
 <div class="notifications-holder">
   <nav class="notifications-bar">
     <!-- Logo (left side) -->
@@ -27,4 +28,12 @@
     </div>
   </nav>
 </div>
+<!-- If session isn't active, load in a simple logo top bar -->
+<?php else: ?>
+  <div class="notifications-holder">
+  <nav class="signUp-bar">
+    <img src="icons/logo.svg" class="logo" alt="logo">
+  </nav>
+</div>
+<?php endif; ?>
 <span class="gap"></span>

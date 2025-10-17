@@ -15,11 +15,9 @@
 <body>
     <div class="page-wrapper">
         <!-- Loading our Notifications Bar in -->
-        <?php if ($sessionActive) include 'php/NotificationsBar.php'; 
-            else include 'php/TopLogo.php';
-        ?>
+        <?php include 'php/NotificationsBar.php'; ?>
+
         <!-- Loading in the different page options depending on the view -->
-        <!-- Login/SignUp Page -->
         <?php 
             if ($sessionActive) {
                 if (isset($_SESSION['user']['theme'])) {
@@ -35,9 +33,8 @@
                     include "php/Messages.php";
                 } else {
                     include "php/Timeline.php";
-                    echo '<script src="js/like_post_listener.js"></script>';
                 }  
-
+            // Login/SignUp Page
             } else {
                 if ($view === 'signup') {
                     include 'php/SignUp.php';
@@ -48,17 +45,16 @@
                 }
             }
                 ?> 
+
         <!-- Loading the Navigation Bar in -->
         <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
     </div>
 
     <!-- JavaScript -->
-    <!-- Live Image Viewers -->
-    <!-- SignUp & Add Post -->
     <?php if ($view === 'addpost' || $view === 'signup' || $view === 'profile'): ?>
         <script src="js/live_image_viewer.js"></script>
-    <?php endif; ?>
-
-    
+        <?php endif; ?>
+        
+    <script src="js/main.js"></script>
 
 </body>
