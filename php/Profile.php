@@ -39,9 +39,6 @@
                                                                                                                 echo htmlspecialchars($_SESSION['user']['surname']);}?>">
                             <span class="email-Profile"><?php echo htmlspecialchars($_SESSION['user']['email'])?></span>
                         </div>
-                        <div class="settings-holder">
-                            <button onclick="slideOutSettings()" class="button-Profile settings-button"><img src="icons/Settings.svg" alt="Settings" class="settings-icon"></button>
-                        </div>
                     </div>
                     <textarea name="profile_bio" id="profile_bio" class="bio-Profile-edit" rows="3"><?php if (isset($_POST['profile_bio'])) {
                                                                                                             echo htmlspecialchars($_POST['profile_bio']); 
@@ -74,7 +71,7 @@
                         <span class="email-Profile"><?php echo htmlspecialchars($_SESSION['user']['email'])?></span><br>
                     </div>
                     <div class="settings-holder">
-                        <button onclick="slideOutSettings()" class="button-Profile settings-button"><img src="icons/Settings.svg" alt="Settings" class="settings-icon"></button>
+                        <button onclick="slideOutSettings()" class="button-Profile settings-button"><img src="icons/Settings<?php if ($_SESSION['user']['theme'] === 'dark'){ echo "-Dark";}?>.svg" alt="Settings" class="settings-icon"></button>
                     </div>
                 </div>
                 <p class="bio-Profile"><?php echo htmlspecialchars($_SESSION['user']['profile_bio'])?></p>

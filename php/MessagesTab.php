@@ -14,14 +14,6 @@
         </div>
     </div>
     <div class="message-scroll-area">
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
-        <?php include 'SingleMessage.php'; ?>
+        <?php findAndDisplayActiveChats($_SESSION['user']['id']) ?>
     </div>
 </div>

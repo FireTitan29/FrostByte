@@ -11,8 +11,9 @@
     --lightBlue: rgb(66, 191, 221);
     --greyBlue: rgb(187, 230, 228);
     --myWhite: rgb(240, 246, 246);
+    --lightWhite: rgb(255, 255, 255);
     --background-image: url(../images/Background.svg);
-
+    
     --accentPink: rgb(255, 102, 179);
     --accentPinkDark: rgb(255, 10, 120);
     --fontXLarge: 26px;
@@ -41,7 +42,7 @@
     --iconSizeHover: 50px;
 
     --topbar-h: 10px;
-    --bottombar-h: 30px;
+    --bottombar-h: 20px;
 }
 
 /* Ensuring we have our fonts setup correctly */
@@ -101,7 +102,7 @@ p {
 }
 
 /* Buttons */
-.button-Profile {
+.button-Profile, .button-Profile-friend {
     background-color: var(--lightBlue);
     color: var(--myWhite);
     border-style: var(--buttonBorderStyle);
@@ -114,6 +115,10 @@ p {
     margin-top: 5px;
     width: 90px;
     margin-left: 15px;
+}
+
+.button-Profile-friend {
+    width: 150px;
 }
 
 .button-Form {
@@ -130,13 +135,13 @@ p {
     width: 87%;
 }
 
-.button-Form:hover, .button-Profile:hover, .settings-button:hover {
+.button-Form:hover, .button-Profile:hover, .settings-button:hover, .button-Profile-friend:hover, .button-Message:hover {
     background-color: var(--accentPink);
     cursor: pointer;
     transform: scale(1.05);
 }
 
-.button-Form:active, .button-Profile:active, .settings-button:active {
+.button-Form:active, .button-Profile:active, .settings-button:active, .button-Profile-friend:active, .button-Message:active {
     background-color: var(--lightBlue);
     transform: scale(0.95);
 }
@@ -477,6 +482,8 @@ p {
 
 .searchIcon {
     height: 30px;
+    width: 30px;
+    aspect-ratio: 1/1;
 }
 
 .searchWrapper {
@@ -487,6 +494,7 @@ p {
 }
 
 .searchBarInput {
+    background-color: var(--lightWhite);
     width: 100%;
     padding: 8px 35px 8px 12px;
     border: 1px solid var(--darkBlue);
@@ -626,7 +634,7 @@ p {
 
 .icon-AnchorTag {
     text-decoration: none;
-    color: var(--lightBlue);
+    color: rgb(66, 191, 221);
 }
 
 /* Posts Old Design */
@@ -667,10 +675,15 @@ p {
     margin-right: 12px;
     object-fit: cover;
     border-radius: 100%;
+
     border-style: solid;
     border-color: var(--lightBlue);
     border-width: 2px;
 
+}
+
+.smallProfileIcon-Post:hover {
+    border-color: var(--accentPink);
 }
 
 .userName-Post {
@@ -679,6 +692,17 @@ p {
     font-size: var(--fontText);
     color: var(--accentPink);
     font-weight: bold;
+}
+
+.userName-Post a {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.userName-Post a:hover {
+    color: var(--lightBlue);
 }
 
 .image-holder-Profile {
@@ -741,7 +765,7 @@ p {
     transition: var(--transtionTime);
 }
 
-/* Animation when clicked */
+/* Animation when like button is clicked */
 .like-Post.active {
   animation: pop 0.4s ease forwards;
 }
@@ -794,9 +818,6 @@ p {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    padding-right: 30px;
 }
 
 .single-border-Messaging {
@@ -804,17 +825,41 @@ p {
     border: none;
     border-bottom: solid;
     border-color: var(--greyBlue);
-    width: 430px;
-    margin-top: 8px;
+    width: 440px;
+    /* margin-top: 8px; */
 }
 
 .single-contact-Messaging {
     padding-bottom: 0px;
+    background-color: var(--myWhite);
+    padding: 10px;
+    padding-top: 20px;
+    transition: var(--transtionTime) ease;
+}
+
+.single-contact-Messaging:hover {
+    background-color: var(--lightWhite);
+    cursor: pointer;
+}
+
+.button-Message {
+    background-color: var(--lightBlue);
+    color: var(--myWhite);
+    border-style: var(--buttonBorderStyle);
+    border-radius: var(--buttonBorderRadius);
+    transition: var(--transtionTime);
+    font-size: var(--fontText);   
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+    margin-top: 5px;
+    width: 90px;
 }
 
 .picture-profile-Message {
     width: 60px;
     height: 60px;
+    aspect-ratio: 1/1;
     object-fit: cover;
     border-radius: 100%;
     border-style: solid;
@@ -841,10 +886,9 @@ p {
 .lastMessage-Holder {
     display: flex;
     flex-direction: row;
-    justify-content: left;
     align-items: center;
-    width: 370px;
-    margin-bottom: 10px;
+    width: 354px;
+    position: relative;
 }
 
 .last-Message {
@@ -856,16 +900,27 @@ p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 297px;
+    max-width: 280px;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.ts {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    text-align: right;
 }
 
 .timeStamp-Message {
     font-size: var(--fontSmall);
     color: var(--lightBlue);
+    margin-left: auto;
+    text-align: right;
+    white-space: nowrap;
     display: inline;
     margin-top: 0px;
-    width: 30px;
-    text-align: right;
+    width: auto;
 }
 
 .top-holder-Message {
@@ -894,6 +949,7 @@ p {
 
 .captionField-AddPost {
     /* margin-top: 25px; */
+    background-color: var(--lightWhite);
     width: 380px;
     resize:none;
     text-align: left;
@@ -932,6 +988,7 @@ p {
 }
 
 .button-Content {
+    color: var(--myWhite);
     display: flex;
     align-items: center;
     gap: 5px;
@@ -1045,6 +1102,7 @@ p {
 
 /* Editing the Profile Styling */
 .bio-Profile-edit {
+    background-color: var(--lightWhite);
     margin-top: 5px;
     width: 295px;
     resize:none;
@@ -1061,6 +1119,7 @@ p {
 }
 
 .username-Profile-edit {
+    background-color: var(--lightWhite);
     display: inline;
     margin: 0;     
     padding-top: 5px;         
@@ -1078,7 +1137,7 @@ p {
     border-width: 2px;
     transition: var(--transtionTime);
     margin-bottom: 5px;
-    width: 110px;
+    width: 145px;
     font-size: var(--fontMedium);
 }
 
@@ -1243,3 +1302,180 @@ so that we can make it look like a button the user can click with instructions *
     cursor: pointer;
 }
 
+.reciever-info-window {
+    scroll-margin-top: 40vh;
+    width: 430px;
+    padding: var(--windowPadding);
+    background-color: var(--myWhite);
+    text-align: left;
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-style: solid;
+    border-color: var(--lightBlue);
+    border-radius: var(--buttonBorderRadius);
+    border-color: var(--lightBlue);
+    border-width: 2px;
+    padding-bottom: 15px;
+}
+
+.chat-area-holder {
+    background-color: var(--myWhite);
+    width: 470px;
+    border-radius: var(--buttonBorderRadius);
+}
+
+.chat-area {
+    background-color: var(--lightWhite);
+    margin: 10px;
+    margin-bottom: 0px;
+    border-radius: var(--buttonBorderRadius);
+    padding: 10px;
+    height: 470px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.profile-picture-message {
+    aspect-ratio: 1 / 1;
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: var(--lightBlue);
+    border-width: 2px;
+}
+
+.profile-name-bio-message {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.username-chat {
+    display: inline;
+    margin: 0;              
+    padding-top: 6px;
+    font-size: var(--fontMedium);
+    color: var(--accentPink);
+    font-weight: bolder;
+    align-self: flex-start;
+}
+
+.goToProfile {
+    text-decoration: none;
+}
+
+.goToProfile:hover .profile-picture-message{
+    border-color: var(--accentPink);
+}
+
+.message-sent-holder {
+    display: flex;
+    justify-content: right;
+    flex-direction: row;
+}
+
+.message-recieved-holder {
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+}
+
+.message {
+    margin-top: 5px;
+    display: inline-block;
+    font-size: var(--fontText);
+    max-width: 250px;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--myWhite);
+    line-height: 1.25
+}
+
+.timestamp-message {
+    display: block;
+    font-size: var(--fontSmallMedium);
+    color: var(--greyBlue);
+    margin-top: 2px;
+}
+
+.timesent {
+    text-align: right;
+    margin-right: 5px;
+}
+
+.timerecieved {
+    text-align: left;
+    margin-left: 5px;
+}
+
+.message-sent {
+    background-color: var(--lightBlue);
+}
+    
+.message-recieved {
+    background-color: var(--accentPink);
+}
+
+.sendIcon {
+    background-color: var(--lightBlue);
+    border-radius: 50%;
+    border-style: none;
+    width: 28px;
+    height: 28px;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sendIcon:hover {
+    background-color: var(--accentPink);
+}
+
+.sendIconImage {
+    aspect-ratio: 1/1;
+}
+
+.sendBarInput {
+    background-color: var(--lightWhite);
+    width: 100%;
+    padding: 8px 35px 8px 12px;
+    border: 1px solid var(--darkBlue);
+    border-radius: 20px;
+    font-size: var(--fontText);
+    outline: none;
+    color: var(--darkBlue);
+}
+
+.sendBarInput::placeholder {
+    color: var(--lightBlue);
+}
+
+.sendWrapper {
+    position: relative;
+    display: inline-block;
+    width: 450px;
+    margin-right: 5px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.link-back-messages {
+    color: var(--lightBlue);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 15px;
+    font-size: var(--fontText);
+}
+
+.link-back-messages:hover {
+    color: var(--accentPink);
+}
+
+.date-holder-messages {
+    text-align: center;
+    font-size: var(--fontSmallMedium);
+    color: var(--greyBlue);
+}

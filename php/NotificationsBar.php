@@ -2,7 +2,7 @@
 <div class="notifications-holder">
   <nav class="notifications-bar">
     <!-- Logo (left side) -->
-    <img src="icons/logo.svg" class="logo" alt="logo">
+    <img src="icons/logo<?php if ($_SESSION['user']['theme'] === 'dark'){ echo "-Dark";}?>.svg" class="logo" alt="logo">
 
     <!-- Icons & SearchBar (right side) -->
      <div class="searchWrapper">

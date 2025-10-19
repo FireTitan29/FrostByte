@@ -26,7 +26,7 @@
 
         <label class="custom-file-upload-AddPost">
             <div class="button-Content">
-                <img src="icons/UploadImage.svg" alt="Upload" class="upload-icon" />
+                <img src="icons/UploadImage<?php if ($_SESSION['user']['theme'] === 'dark'){ echo "-Dark";}?>.svg" alt="Upload" class="upload-icon" />
                 <span>Upload Image</span>
             </div>
         <input type="file" name="image" id="image" hidden accept=".jpg,.jpeg,.png">

@@ -1,19 +1,27 @@
 <div class="single-border-Messaging">
-<div class="single-contact-Messaging">
-    <div class="picture-info-Profile">
-        <img class="picture-profile-Message" src="icons/profile-picture-none.svg" alt="profile-picture">
-        <div class="name-bio-Profile">
-            <div class="top-holder-Message">
-                <div class="user-info">
-                    <h3 class="username-Message">Tyler Duggan</h3>
-                    <span class="email-Profile">tylersduggan@gmail.com</span>
+<form method="GET" action="index.php">
+    <label for="button-<?php echo $thisUserID?>">
+    <div class="single-contact-Messaging">
+        <div class="picture-info-Profile">
+            <img class="picture-profile-Message" src="<?php echo $profilePicture ?>" alt="profile-picture">
+            <div class="name-bio-Profile">
+                <div class="top-holder-Message">
+                    <div class="user-info">
+                        <h3 class="username-Message"><?php echo htmlspecialchars($sendTo['firstname'] . ' ' . $sendTo['surname'])?></h3>
+                        <span class="email-Profile"><?php echo htmlspecialchars($sendTo['email'])?></span>
+                    </div>
+
+                    <input hidden name="view" value="chat"></input>
+                    <input hidden name="sendto" value="<?php echo $thisUserID?>"></input>
+                    <button id="button-<?php echo $thisUserID?>" type="submit" class="button-Message">Message</button>
+
                 </div>
-                <button class="button-Profile">Message</button>
-            </div>
-            <div class="lastMessage-Holder">
-                <p class="last-Message">I am so excited that we get to have a conversation on this platform</p><p class="timeStamp-Message">12/06/2025</p>
+                <div class="lastMessage-Holder">
+                    <p class="last-Message"><?php echo $textBody?></p><div class="ts"><p class="timeStamp-Message"><?php echo $formattedTime?></p></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    </label>
+</form>
 </div>

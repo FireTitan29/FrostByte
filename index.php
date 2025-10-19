@@ -27,10 +27,14 @@
                 }
                 if ($view === 'profile') {
                     include "php/Profile.php";
+                } elseif ($view === 'profileview') {
+                    include "php/ViewProfile.php";
                 } else if ($view === 'addpost') {
                     include "php/AddPost.php";                   
                 } else if ($view === 'messages'){ 
-                    include "php/Messages.php";
+                    include "php/MessagesTab.php";
+                } else if ($view === 'chat'){ 
+                    include "php/chatWindow.php";
                 } else {
                     include "php/Timeline.php";
                 }  
