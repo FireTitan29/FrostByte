@@ -749,12 +749,12 @@
                 includeMessage($message['sender_id'], $message['text_body'],
                  $message['created_at'], $message['is_read'], $addDateLine);
             }
+            return true;
         }
     }
 
 function findAndDisplayActiveChats($user_id) {
     $pdo = connectToDatabase();
-
     // Get all conversations this user is part of
     $stmt = $pdo->prepare('
         SELECT conversation_id, user1_id, user2_id 
@@ -767,47 +767,47 @@ function findAndDisplayActiveChats($user_id) {
 
     if (!$conversations) {
         return false;
-    }
+    } else {
+        foreach ($conversations as $conv) {
+            // Get the last message for this conversation
+            $stmt = $pdo->prepare('
+                SELECT * FROM messages 
+                WHERE conversation_id = :chat_id 
+                ORDER BY created_at DESC 
+                LIMIT 1
+            ');
+            $stmt->bindValue(':chat_id', $conv['conversation_id']);
+            $stmt->execute();
+            $lastMessage = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    foreach ($conversations as $conv) {
-        // Get the last message for this conversation
-        $stmt = $pdo->prepare('
-            SELECT * FROM messages 
-            WHERE conversation_id = :chat_id 
-            ORDER BY created_at DESC 
-            LIMIT 1
-        ');
-        $stmt->bindValue(':chat_id', $conv['conversation_id']);
-        $stmt->execute();
-        $lastMessage = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($lastMessage) {
+                $rawTime = $lastMessage['created_at'];
+                $messageTime = strtotime($rawTime);
 
-        if ($lastMessage) {
-            $rawTime = $lastMessage['created_at'];
-            $messageTime = strtotime($rawTime);
+                // check if it's today, if it is, show time, otherwise, show date
+                if (date('Y-m-d') === date('Y-m-d', $messageTime)) {
+                    $formattedTime = date('H:i A', $messageTime);
+                } else {
+                    $formattedTime = date('d M Y', $messageTime);
+                }
+                
+                $profilePicture = '';
 
-            // check if it's today, if it is, show time, otherwise, show date
-            if (date('Y-m-d') === date('Y-m-d', $messageTime)) {
-                $formattedTime = date('H:i A', $messageTime);
-            } else {
-                $formattedTime = date('d M Y', $messageTime);
+                // Figure out who the "other" user is
+                if ($conv['user1_id'] == $user_id) {
+                    $sendTo = getUserDetailsID($conv['user2_id']);
+                    $profilePicture = $sendTo['profile_pic'];
+                    $thisUserID = $conv['user2_id'];
+                } else {
+                    $sendTo = getUserDetailsID($conv['user1_id']);
+                    $profilePicture = $sendTo['profile_pic'];
+                    $thisUserID = $conv['user1_id'];
+                }
+                $textBody = htmlspecialchars($lastMessage['text_body']);
+                $senderId = htmlspecialchars($lastMessage['sender_id']);
+                // Pass message + user info to your include
+                include 'php/SingleMessage.php';
             }
-            
-            $profilePicture = '';
-
-            // Figure out who the "other" user is
-            if ($conv['user1_id'] == $user_id) {
-                $sendTo = getUserDetailsID($conv['user2_id']);
-                $profilePicture = $sendTo['profile_pic'];
-                $thisUserID = $conv['user2_id'];
-            } else {
-                $sendTo = getUserDetailsID($conv['user1_id']);
-                $profilePicture = $sendTo['profile_pic'];
-                $thisUserID = $conv['user1_id'];
-            }
-            $textBody = htmlspecialchars($lastMessage['text_body']);
-            $senderId = htmlspecialchars($lastMessage['sender_id']);
-            // Pass message + user info to your include
-            include 'php/SingleMessage.php';
         }
     }
 }

@@ -18,7 +18,10 @@
 </div>
 <div class="chat-area-holder">
     <div class="chat-area">
-        <?php findAndDisplayMessages($_GET['sendto'], $_SESSION['user']['id']); ?>
+        <?php if (findAndDisplayMessages($_GET['sendto'], $_SESSION['user']['id'])): ?>
+        <?php else: ?>
+            <p class="no-messages">No Messages Yet...</p>
+        <?php endif; ?>
     </div>
     <div>
         <div class="sendWrapper">

@@ -1479,3 +1479,9 @@ so that we can make it look like a button the user can click with instructions *
     font-size: var(--fontSmallMedium);
     color: var(--greyBlue);
 }
+
+.no-messages {
+    font-size: var(--fontText);
+    color: var(--lightBlue);
+    text-align: center;
+}
