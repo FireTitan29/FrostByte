@@ -41,22 +41,4 @@
     const chatArea = document.querySelector('.chat-area');
     chatArea.scrollTop = chatArea.scrollHeight;
     document.getElementById("textmessageinput").value = "";
-
-    function sendMessage(event) {
-        event.preventDefault();
-        
-        let message = document.getElementById("textmessageinput").value;
-        let userId = document.getElementById("sender").value;
-        let receiverId = document.getElementById("reciever").value;
-        
-        fetch('php/sendMessage.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 
-            'user_id=' + encodeURIComponent(userId) +
-            '&receiver_id=' + encodeURIComponent(receiverId) +
-            '&textmessage=' + encodeURIComponent(message)
-        }).then(() => {
-        location.reload();});
-    }
 </script>

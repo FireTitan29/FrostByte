@@ -15,7 +15,7 @@
 <body>
     <div class="page-wrapper">
         <!-- Loading our Notifications Bar in -->
-        <?php include 'php/NotificationsBar.php'; ?>
+        <?php include 'php/components/NotificationsBar.php'; ?>
 
         <!-- Loading in the different page options depending on the view -->
         <?php 
@@ -26,38 +26,38 @@
                     }
                 }
                 if ($view === 'profile') {
-                    include "php/Profile.php";
+                    include "php/views/Profile.php";
                 } elseif ($view === 'profileview') {
-                    include "php/ViewProfile.php";
+                    include "php/views/ViewProfile.php";
                 } else if ($view === 'addpost') {
-                    include "php/AddPost.php";                   
+                    include "php/views/AddPost.php";                   
                 } else if ($view === 'messages'){ 
-                    include "php/MessagesTab.php";
+                    include "php/views/MessagesTab.php";
                 } else if ($view === 'chat'){ 
-                    include "php/chatWindow.php";
+                    include "php/views/chatWindow.php";
                 } else {
-                    include "php/Timeline.php";
+                    include "php/views/Timeline.php";
                 }  
             // Login/SignUp Page
             } else {
                 if ($view === 'signup') {
-                    include 'php/SignUp.php';
+                    include 'php/views/SignUp.php';
                 } else if ($view === 'passwordreset') {
-                    include 'php/PasswordReset.php';  
+                    include 'php/views/PasswordReset.php';  
                 } else {
-                    include 'php/Login.php';
+                    include 'php/views/Login.php';
                 }
             }
-                ?> 
+        ?> 
 
         <!-- Loading the Navigation Bar in -->
-        <?php if ($sessionActive) include 'php/NavigationBar.php'; ?>
+        <?php if ($sessionActive) include 'php/components/NavigationBar.php'; ?>
     </div>
 
     <!-- JavaScript -->
     <?php if ($view === 'addpost' || $view === 'signup' || $view === 'profile'): ?>
         <script src="js/live_image_viewer.js"></script>
-        <?php endif; ?>
+    <?php endif; ?>
         
     <script src="js/main.js"></script>
 

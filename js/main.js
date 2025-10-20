@@ -28,7 +28,7 @@ function changeTheme(displayMode) {
         logo.src = "icons/logo-Dark.svg";
     }
     // Send update to PHP DB
-    fetch('php/UpdateTheme.php', {
+    fetch('php/controllers/UpdateTheme.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'theme=' + encodeURIComponent(displayMode)
@@ -38,4 +38,55 @@ function changeTheme(displayMode) {
 function slideOutSettings() {
     const settings = document.querySelector('.settings-window');
     settings.classList.toggle('active');
+}
+
+// This function activates when the like button is clicked
+function likePost(postID) {
+    let likeHolder = document.querySelector(`#post-${postID}-holder`);
+    let alreadyLiked = likeHolder.getAttribute("data-liked");
+    let counterEl = document.getElementById(`post-${postID}-counter`);
+    let heartEl = document.getElementById(`like-heart-${postID}`);
+
+    let counterNum = Number(counterEl.innerHTML);
+
+    if (alreadyLiked === "true") {
+        counterEl.innerHTML = counterNum - 1;
+        heartEl.src = "icons/Like.svg";
+        likeHolder.setAttribute("data-liked", "false");
+    } else {
+        counterEl.innerHTML = counterNum + 1;
+        heartEl.src = "icons/Like-Active.svg";
+        likeHolder.setAttribute("data-liked", "true");
+    }
+
+    fetch('php/controllers/LikePost.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'like-button-id=' + encodeURIComponent(postID)
+    });
+
+    // Activating the animation and then after it plays once, stop it by removing active
+    heartEl.classList.add("active");
+    heartEl.addEventListener("animationend", () => {
+        heartEl.classList.remove("active");
+    }, { once: true });
+}
+
+// Sends a message to the chat and updates the DB
+function sendMessage(event) {
+    event.preventDefault();
+    
+    let message = document.getElementById("textmessageinput").value;
+    let userId = document.getElementById("sender").value;
+    let receiverId = document.getElementById("reciever").value;
+    
+    fetch('php/controllers/sendMessage.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 
+        'user_id=' + encodeURIComponent(userId) +
+        '&receiver_id=' + encodeURIComponent(receiverId) +
+        '&textmessage=' + encodeURIComponent(message)
+    }).then(() => {
+    location.reload();});
 }
