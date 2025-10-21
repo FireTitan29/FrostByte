@@ -7,6 +7,8 @@
     // Redirects to homepage if accessed directly without POST.
 
     include '../library/database.php';
+    include '../library/notifications.php';
+    include '../library/posts.php';
 
     // Ensure this script is only accessed via POST with a like button
     if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['like-button-id'])) {
@@ -48,6 +50,9 @@
             $stmt->bindValue(':post_id', $post_id);
             $stmt->bindValue(':user_id', $user_id);
             $stmt->execute();
+
+            // Adding a notification to the post user
+            addNotification(getUserOfPost($post_id), $user_id, 'liked your post');
             
         } else {
 
@@ -72,6 +77,8 @@
             $stmt->bindValue(':post_id', $post_id);
             $stmt->bindValue(':user_id', $user_id);
             $stmt->execute();
+
+            addNotification(getUserOfPost($post_id), $user_id, 'unliked your post');
         }
         exit;
     } else {

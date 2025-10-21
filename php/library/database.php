@@ -2,7 +2,6 @@
 // Library: database.php
 // Purpose: Centralized functions for DB connections and queries
 // - connectToDatabase(): Opens a PDO connection with error handling
-// - addPostToDB(): Inserts a new post record
 // - getUserDetailsEmail(): Fetches user info via email
 // - getUserDetailsID(): Fetches user info via ID
 // - readChat(): Marks unread messages in a chat as read
@@ -18,23 +17,6 @@ function connectToDatabase() {
     } catch (PDOException $e) {
         die("Connection to the DB failed, here's why: " . $e->getMessage());
     }
-}
-
-// This function adds the posts to the DB using a SQL insert
-function addPostToDB($caption, $imagePath = '') {
-    // connecting to the DB
-    $pdo = connectToDatabase();
-
-    $stmt = $pdo->prepare(
-    'INSERT INTO posts (user_id, caption, image_path)
-    VALUES (:user_id, :caption, :image_path)');
-
-    // stopping SQL injection
-    $stmt->bindValue(':user_id', $_SESSION['user']['id'], PDO::PARAM_INT);
-    $stmt->bindValue(':caption', $caption, PDO::PARAM_STR);
-    $stmt->bindValue(':image_path', $imagePath, PDO::PARAM_STR);
-    
-    $stmt->execute();
 }
 
 // Getting User Details using their email
@@ -88,5 +70,33 @@ function countUnreadMessages($conversation_id, $user_id) {
     $stmt->execute();
 
     return (int) $stmt->fetchColumn();
+}
+
+function countUnreadNotifications($user_id) {
+    $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) 
+        FROM notifications 
+        WHERE user_id = :userid 
+        AND is_read = 0
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return (int)$stmt->fetchColumn();
+}
+
+function getNotifications($user_id) {
+        $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT * 
+        FROM notifications 
+        WHERE user_id = :userid AND is_read = 0
+        ORDER BY created_at DESC
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>

@@ -97,6 +97,7 @@
     // Load modular functions for DB, validation, auth, posts, and messaging
     include 'library/database.php';
     include 'library/validation.php';
+    include 'library/notifications.php';
     include 'library/authentication.php';
     include 'library/messages.php';
     include 'library/posts.php';

@@ -4,6 +4,7 @@
 // Purpose: Functions for handling post-related logic
 // - didUserLike(): Checks if a specific user has liked a given post
 // - getUserOfPost(): Retrieves the owner (user_id) of a post
+// - addPostToDB(): Inserts a new post record
 // - includePost(): Decides the correct component to render (with/without image)
 // - findAndDisplayPosts(): Fetches and displays posts (all or by user), ordered by latest
 
@@ -34,6 +35,23 @@ function getUserOfPost($post_id) {
     $result =  $stmt->fetchColumn();
 
     return $result;
+}
+
+// This function adds the posts to the DB using a SQL insert
+function addPostToDB($caption, $imagePath = '') {
+    // connecting to the DB
+    $pdo = connectToDatabase();
+
+    $stmt = $pdo->prepare(
+    'INSERT INTO posts (user_id, caption, image_path)
+    VALUES (:user_id, :caption, :image_path)');
+
+    // stopping SQL injection
+    $stmt->bindValue(':user_id', $_SESSION['user']['id'], PDO::PARAM_INT);
+    $stmt->bindValue(':caption', $caption, PDO::PARAM_STR);
+    $stmt->bindValue(':image_path', $imagePath, PDO::PARAM_STR);
+    
+    $stmt->execute();
 }
 
 // this function includes a post depending on whether it has an image

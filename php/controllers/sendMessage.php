@@ -1,6 +1,7 @@
 <?php 
     session_start();
     include '../library/database.php';
+    include '../library/notifications.php';
 
     // Controller: SendMessage
     // 1. Check if conversation already exists between the two users
@@ -58,6 +59,8 @@
         $stmt->bindValue(':sender', $user_id);
         $stmt->bindValue(':textmessage', $textMessage);
         $stmt->execute();
+
+        addNotification($receiver_id, $user_id, 'sent you a message');
 
     } else {
          // Block direct URL access (no POST data), send user back to homepage (index)

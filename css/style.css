@@ -1666,3 +1666,63 @@ so that we can make it look like a button the user can click with instructions *
   justify-content: center;
   white-space: nowrap;
 }
+
+.notificationsResults {
+  display: none; 
+  padding-top: 5px;
+  position: absolute;
+  top: 80%;
+  width: 250px;
+  height: 250px;
+  overflow-y: auto; 
+  background: var(--lightWhite);
+  border-radius: 4px;
+  box-shadow: var(--windowBoxShadow);
+}
+
+.notificationsResults {
+  left: 50%;
+  transform: translateX(-1%);
+}
+
+.notification-text-holder {
+  color: var(--darkBlue);
+  font-size: var(--fontText);
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: var(--greyBlue);
+}
+
+.message-icon-holder-notification {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.notification-name {
+  color: var(--lightBlue);
+  font-weight: bold;
+}
+
+.timestamp-notification {
+  margin: 0;
+  color: var(--greyBlue);
+  font-size: var(--fontSmall);
+  margin-top: 2px;
+  text-align: center;
+}
+
+.notifications-icon {
+  width: 15px;
+  margin-right: 5px;
+  display: inline;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: var(--transtionTime);
+}
