@@ -1,8 +1,23 @@
+<!-- Security: Prevent direct access to this file unless APP_RUNNING is defined -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
+
+<!-- Navigation Bar Component
+     - Displays fixed navigation bar at the bottom of the page.
+     - Each icon acts as a navigation link.
+     - Icon color indicates state:
+        + Pink = current page
+        + Blue = inactive (link available to user but not active) -->
+
 <span class="gap"><br></span>
 <!-- Navigation Bar at Bottom -->
     <div class="navbar-holder">
         <nav class="navbar">
-            <!-- Timeline/Dashboard -->
+            <!-- Timeline/Dashboard: Takes user to main timeline feed -->
             <input type="radio" id="nav-dashboard" name="nav" <?php selectNavigationIcon("timeline"); ?>>
             <label for="nav-dashboard">
                 <a class="icon-AnchorTag" href="index.php?view=timeline">
@@ -13,7 +28,7 @@
                 </a>
             </label>
 
-            <!-- Add Post -->
+            <!-- Add Post: Goes to the form for creating a new post -->
             <input type="radio" id="nav-addPost" name="nav" <?php selectNavigationIcon("addpost"); ?>>
             <label for="nav-addPost">
                 <a class="icon-AnchorTag" href="index.php?view=addpost">
@@ -24,7 +39,7 @@
                 </a>
             </label>
 
-            <!-- Messages -->
+            <!-- Messages: Opens the user's messages/inbox -->
             <input type="radio" id="nav-messages" name="nav"  <?php selectNavigationIcon("messages"); ?>>
             <label for="nav-messages">
                 <a class="icon-AnchorTag" href="index.php?view=messages">
@@ -35,7 +50,7 @@
                 </a>
             </label>
 
-            <!-- Profile -->
+            <!-- Profile: Opens the SESSION user's profile page -->
             <input type="radio" id="nav-profile" name="nav"  <?php selectNavigationIcon("profile"); ?>>
             <label for="nav-profile">
                 <a class="icon-AnchorTag" href="index.php?view=profile">

@@ -1,7 +1,20 @@
-<?php include 'php/main.php' ?>
+<?php 
+// -----------------------------------------------------------
+// index.php
+// Purpose: Core entry point for FrostByte
+// - Defines APP_RUNNING constant (prevents direct file access)
+// - Loads main.php (handles session, routing, and setup)
+// - Decides which view to include based on current user state
+// - Handles theme loading (dark/light mode)
+// -----------------------------------------------------------
+
+    define('APP_RUNNING', true); 
+    include 'php/main.php'; 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,53 +25,56 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon.png">
 
 </head>
+
 <body>
     <div class="page-wrapper">
-        <!-- Loading our Notifications Bar in -->
+        <!-- Notifications bar -->
         <?php include 'php/components/NotificationsBar.php'; ?>
 
-        <!-- Loading in the different page options depending on the view -->
-        <?php 
-            if ($sessionActive) {
-                if (isset($_SESSION['user']['theme'])) {
-                    if ($_SESSION['user']['theme'] === 'dark') {
-                        echo '<script src="js/change_theme_dark.js"></script>';
-                    }
-                }
-                if ($view === 'profile') {
-                    include "php/views/Profile.php";
-                } elseif ($view === 'profileview') {
-                    include "php/views/ViewProfile.php";
-                } else if ($view === 'addpost') {
-                    include "php/views/AddPost.php";                   
-                } else if ($view === 'messages'){ 
-                    include "php/views/MessagesTab.php";
-                } else if ($view === 'chat'){ 
-                    include "php/views/chatWindow.php";
-                } else {
-                    include "php/views/Timeline.php";
-                }  
-            // Login/SignUp Page
-            } else {
-                if ($view === 'signup') {
-                    include 'php/views/SignUp.php';
-                } else if ($view === 'passwordreset') {
-                    include 'php/views/PasswordReset.php';  
-                } else {
-                    include 'php/views/Login.php';
+         <!-- Load view depending on session and $view -->
+        <?php
+        if ($sessionActive) {
+            // Apply dark theme if set
+            if (isset($_SESSION['user']['theme'])) {
+                if ($_SESSION['user']['theme'] === 'dark') {
+                    echo '<script src="js/change_theme_dark.js"></script>';
                 }
             }
-        ?> 
+            // Logged-in views
+            if ($view === 'profile') {
+                include "php/views/Profile.php";
+            } elseif ($view === 'profileview') {
+                include "php/views/ViewProfile.php";
+            } else if ($view === 'addpost') {
+                include "php/views/AddPost.php";
+            } else if ($view === 'messages') {
+                include "php/views/MessagesTab.php";
+            } else if ($view === 'chat') {
+                include "php/views/chatWindow.php";
+            } else {
+                include "php/views/Timeline.php";
+            }
+            // Navigation bar is always included for logged-in users
+            include 'php/components/NavigationBar.php';
 
-        <!-- Loading the Navigation Bar in -->
-        <?php if ($sessionActive) include 'php/components/NavigationBar.php'; ?>
+        } else {
+            // Guest-only views
+            if ($view === 'signup') {
+                include 'php/views/SignUp.php';
+            } else if ($view === 'passwordreset') {
+                include 'php/views/PasswordReset.php';
+            } else {
+                include 'php/views/Login.php';
+            }
+        }
+        ?>
     </div>
 
     <!-- JavaScript -->
     <?php if ($view === 'addpost' || $view === 'signup' || $view === 'profile'): ?>
         <script src="js/live_image_viewer.js"></script>
     <?php endif; ?>
-        
-    <script src="js/main.js"></script>
+
+    <script src="js/main.js" defer></script>
 
 </body>

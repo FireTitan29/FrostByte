@@ -1,3 +1,10 @@
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
 <?php if (isset($_GET['signup'])): ?>
     <?php if ($_GET['signup'] === 'success'): ?>
         <div class="positive-feedback-message-holder">

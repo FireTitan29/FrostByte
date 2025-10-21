@@ -1,9 +1,15 @@
 <?php 
     session_start();
+    include '../library/database.php';
 
+    // Controller: SendMessage
+    // 1. Check if conversation already exists between the two users
+    // 2. If not, create a new conversation
+    // 3. Reset "is_last_message" flag on previous messages
+    // 4. Insert the new message as the latest one
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $pdo = connectToDatabase();
         
         $user_id = $_POST['user_id'];
         $receiver_id = $_POST['receiver_id'];
@@ -53,10 +59,9 @@
         $stmt->bindValue(':textmessage', $textMessage);
         $stmt->execute();
 
-        $stmt->bindValue(':conversation_id', $conversation_id);
-        $stmt->bindValue(':sender', $user_id);
-        $stmt->bindValue(':receiver', $receiver_id);
-        $stmt->bindValue(':textmessage', $textMessage);
-        $stmt->execute();
+    } else {
+         // Block direct URL access (no POST data), send user back to homepage (index)
+        header("Location: ../../index.php");
+        exit;
     }
 ?>

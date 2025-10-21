@@ -1,4 +1,10 @@
-
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
 <!-- failed / success -->
 <?php if (isset($_GET['post'])): ?>
     <?php if ($_GET['post'] === 'success'): ?>

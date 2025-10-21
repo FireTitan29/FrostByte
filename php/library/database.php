@@ -1,8 +1,15 @@
 <?php
-// Because I am going to be connecting to the DB a lot, I wrote this to speed
-// that process up a bit, and make the code easier to read.
-// All this does it connect to the database, and then return the $pdo if
-// the connection was successful. Otherwise it shoots out an error message
+// Library: database.php
+// Purpose: Centralized functions for DB connections and queries
+// - connectToDatabase(): Opens a PDO connection with error handling
+// - addPostToDB(): Inserts a new post record
+// - getUserDetailsEmail(): Fetches user info via email
+// - getUserDetailsID(): Fetches user info via ID
+// - readChat(): Marks unread messages in a chat as read
+// - countUnreadMessages(): Counts unread messages in a conversation
+
+// Opens a PDO connection to the database
+// Returns the PDO object on success, or stops execution with an error message if the connection fails
 function connectToDatabase() {
     try {
         $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
@@ -30,13 +37,13 @@ function addPostToDB($caption, $imagePath = '') {
     $stmt->execute();
 }
 
-    // Getting User Details using their email
+// Getting User Details using their email
 function getUserDetailsEmail($email) {
 
     $pdo = connectToDatabase();
     
     $stmt = $pdo->prepare('SELECT * FROM users WHERE email = :email');
-    $stmt->bindValue(':email', $email);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -49,10 +56,37 @@ function getUserDetailsID($user_id) {
     $pdo = connectToDatabase();
     
     $stmt = $pdo->prepare('SELECT firstname, surname, email, gender, profile_pic, profile_bio FROM users WHERE id = :user_id');
-    $stmt->bindValue(':user_id', $user_id);
+    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     return $user;
 }
 
+// When a chat is opened, this reads all of the unread messages in the chat
+// that were sent from the other person
+function readChat($user_id, $conversation_id) {
+    $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('UPDATE messages SET is_read = 1 WHERE sender_id != :userid AND conversation_id = :convo');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(':convo', $conversation_id, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+// This function counts all the unread messages
+// to display a notification in the inbox messages view
+function countUnreadMessages($conversation_id, $user_id) {
+    $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) 
+        FROM messages 
+        WHERE sender_id != :userid 
+          AND conversation_id = :convo 
+          AND is_read != 1
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(':convo', $conversation_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return (int) $stmt->fetchColumn();
+}
 ?>

@@ -1,8 +1,17 @@
 <?php
-// instead of validating every single field with the same code,
-// I have written a function so that I can reuse it whenever I need to
-// this makes sure that a string isn't empty, and doesn't contain numbers
-// this will be used for firstname, surname etc
+
+// Library: validation.php
+// Purpose: Centralized validation functions for form inputs and file uploads
+// - validateString(): Validates names (non-empty, no numbers, length 3–25)
+// - checkEmailExists(): Ensures unique email in 'users' table
+// - checkPasswordIsCorrect(): Verifies login password against stored hash
+// - validatePasswords(): Confirms password and retyped password match
+// - validateFile(): Validates uploaded images (type, size, spoofing checks)
+// - validateSignUp(): Full signup form validation (names, email, gender, password, profile picture)
+
+
+// Validates a generic string field (e.g., firstname, surname)
+// - Checks: not empty, only letters/valid chars, length between 3–25
 function validateString($string, $field, &$errors)
 {
     if ($string === '') {
@@ -17,7 +26,8 @@ function validateString($string, $field, &$errors)
         return false;
 }
 
-// this function ensures that the email the user is signing up with is unique
+// Checks if an email is already registered in the DB
+// Returns true if it exists, false otherwise
 function checkEmailExists($email) {
         // connecting to the DB
         $pdo = connectToDatabase();
@@ -33,7 +43,10 @@ function checkEmailExists($email) {
 
 }
 
+// Verifies login password against stored password hash
+// Returns true if match, false otherwise
 function checkPasswordIsCorrect($password, $email) {
+
     // connecting to the DB
     $pdo = connectToDatabase();
 
@@ -42,10 +55,10 @@ function checkPasswordIsCorrect($password, $email) {
     $stmt->execute();
     $pass_hash = $stmt->fetchColumn();
     
-    // if the password is correct, then we return true, otherwise they aren't the same
     return (bool) password_verify($password, $pass_hash);
 }
 
+// Confirms both password fields are filled and match
 function validatePasswords($password, $passwordReType, &$errors) {
     if ($password === '' || $passwordReType === '') {
         $errors["password"] = "Fields cannot be left empty";
@@ -54,8 +67,8 @@ function validatePasswords($password, $passwordReType, &$errors) {
     }
 }
 
-// function for validating files, reused for all file uploads of images
-// there are a lot of comments here because this is quite complicated
+// Validates uploaded images
+// - Checks extension (jpg/png), MIME type, file size (≤4MB), and spoofing
 function validateFile($fileName,$fileTempPath, $fileSize, &$errors) {
 
     // Ensuring we only get the file types we want, and also
@@ -111,7 +124,7 @@ function validateSignUp($name, $surname, $email, $gender, $password, $passwordRe
     validateString($name, 'firstname', $errors);
     validateString($surname, 'surname', $errors);
 
-    // Validating the email using the built in method, and then also using our custom function to check the db
+    // Email validation: syntax + uniqueness
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors["email"] = "Please enter a valid email address";
     else if (checkEmailExists($email)) $errors["email"] = "Email is already in use by another user";
 
@@ -119,7 +132,7 @@ function validateSignUp($name, $surname, $email, $gender, $password, $passwordRe
 
     validatePasswords($password, $passwordReType, $errors);
 
-    // Validating Profile Picture if user has uploaded something
+    // Validate profile picture if uploaded
     if (!empty($_FILES['image']['name'])) {
         if ($_FILES['image']['error'] === UPLOAD_ERR_OK)
         {

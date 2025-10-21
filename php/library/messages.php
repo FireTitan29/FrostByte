@@ -1,4 +1,13 @@
 <?php
+
+// Library: messages.php
+// Purpose: Functions to manage conversations and messages
+// - getConversationId(): Retrieves conversation_id between two users
+// - includeMessage(): Renders a message bubble with correct timestamp and styling
+// - findAndDisplayMessages(): Fetches and displays all messages in a conversation, inserting date lines
+// - findAndDisplayActiveChats(): Lists all active chats with their last message and participant info
+
+// Retrieves conversation_id between two users if it exists.
 function getConversationId($sender_id, $receiver_id) {
     $pdo = connectToDatabase();
 
@@ -16,6 +25,10 @@ function getConversationId($sender_id, $receiver_id) {
     return $stmt->fetchColumn();
 }
 
+
+// Renders a single message bubble with timestamp formatting
+// - Adds a date header if message is on a new day
+// - Determines if the message was sent or received
 function includeMessage($sender_id, $textBody, $timeStamp, $is_read, $addDateLine) {
     $date = date('d M Y', strtotime($timeStamp));
     $timeStamp = date('H:i', strtotime($timeStamp));
@@ -29,6 +42,9 @@ function includeMessage($sender_id, $textBody, $timeStamp, $is_read, $addDateLin
     include "php/components/message-bubble.php";
 }
 
+// Fetches all messages for a conversation and displays them
+// - Groups messages by day
+// - Calls includeMessage() for rendering
 function findAndDisplayMessages($send_to, $user_id)
 {
     $chatID = getConversationId($user_id, $send_to);
@@ -59,6 +75,10 @@ function findAndDisplayMessages($send_to, $user_id)
     }
 }
 
+// Finds all conversations for a user and displays the last message
+// - Formats timestamp (time if today, date if older)
+// - Includes other participant’s details and profile picture
+
 function findAndDisplayActiveChats($user_id) {
 $pdo = connectToDatabase();
 // Get all conversations this user is part of
@@ -75,6 +95,7 @@ if (!$conversations) {
     return false;
 } else {
     foreach ($conversations as $conv) {
+
         // Get the last message for this conversation
         $stmt = $pdo->prepare('
             SELECT * FROM messages 
@@ -94,7 +115,7 @@ if (!$conversations) {
             if (date('Y-m-d') === date('Y-m-d', $messageTime)) {
                 $formattedTime = date('H:i A', $messageTime);
             } else {
-                $formattedTime = date('d M Y', $messageTime);
+                $formattedTime = date('d M y', $messageTime);
             }
             
             $profilePicture = '';
@@ -111,6 +132,7 @@ if (!$conversations) {
             }
             $textBody = htmlspecialchars($lastMessage['text_body']);
             $senderId = htmlspecialchars($lastMessage['sender_id']);
+            
             // Pass message + user info to your include
             include 'php/components/SingleMessage.php';
         }

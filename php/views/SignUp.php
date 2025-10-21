@@ -1,3 +1,10 @@
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
 <div class="mainForm-Holder">
     <form class="window-Form" method="POST" enctype="multipart/form-data">
         <h3 class="mainHeading-Form"><span class="accentColor">Sign Up</span> to FrostByte</h3>

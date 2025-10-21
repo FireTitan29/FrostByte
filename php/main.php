@@ -1,14 +1,28 @@
 <?php 
+    // -----------------------------------------------------------
+    // main.php
+    // Purpose: Acts the core brain for the web app.
+    // - Defines session behavior, view handling, and redirects
+    // - Includes all supporting libraries (database, validation, etc.)
+    // - Provides a few global helper functions
+    // -----------------------------------------------------------
+
+    // Prevent direct access unless app is initialized
+    if (!defined('APP_RUNNING')) {
+        header("Location: ../index.php");
+        exit;
+    }
     session_start();
 
-    // debugging for errors when displaying on my domain (www.defiantlyduggan.co.za)
+    // Debug settings (for development/domain error tracking)
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
+    // Get the current view from the URL
     $view = $_GET['view'] ?? '';
 
-    // logging out of account
+    // Log the user out by clearing session and redirecting
     function logout() {
         session_unset();
         session_destroy();
@@ -20,11 +34,11 @@
         logout();
     }
 
+    // Check if a user session is active
     $sessionActive = isset($_SESSION['user']);
 
-    // Handle redirects BEFORE output (on the cpanel, it won't let me change
-    // the header after html elements have landed on the page, so we'll handle
-    // the redirects here before the rest of the page loads)
+    // Handle redirects BEFORE any output is sent
+    // Ensures correct page loads depending on login state
     if ($sessionActive) {
         if ($view === '') {
             header("Location: index.php?view=timeline");
@@ -38,16 +52,19 @@
     }
     
     // -----------------------------------------------------------
-    // GENERAL FUNCTIONS:
+    // GENERAL FUNCTIONS
+    // -----------------------------------------------------------
 
-    // this function makes sure the icons change color by checking what
-    // "view" (page) is selected in the URL
+    // Highlights the selected navigation icon based on current view
     function selectNavigationIcon($iconName) {
         $view = $_GET['view'] ?? '';
         if ($iconName === $view) echo "checked";
         return;
     }
 
+    // Creates folder paths for uploads (profile pics, posts, etc.)
+    // - Ensures directory exists (creates if not)
+    // - Returns both the relative destination path (for DB) and full path (for file system)
     function createFileDirectory($filePath, $fileName, $parentFolder, $prefix, $folderName = '') {
         $dir = __DIR__ . $filePath;
         
@@ -61,7 +78,7 @@
         $newName = uniqid($prefix, true) . '.' . $ext;  
         $destPath = '';
 
-        // if the folder name is blank, then it doesn't create a specific folder
+        // Decide whether to create a subfolder or not
         if ($folderName === '') {
             $destPath = "uploads/$parentFolder/$newName";
         } else {          
@@ -75,7 +92,9 @@
     }
     
     // -----------------------------------------------------------
-    // Including all of the other libraries
+    // LIBRARY INCLUDES
+    // -----------------------------------------------------------
+    // Load modular functions for DB, validation, auth, posts, and messaging
     include 'library/database.php';
     include 'library/validation.php';
     include 'library/authentication.php';

@@ -1,4 +1,15 @@
 <?php
+// Library: Authentication & User Management
+// Handles all user-related operations including:
+// - Signup: form validation, file uploads, DB insert
+// - Login: email/password validation, session creation
+// - Password reset: validation and updating DB
+// - Add Post: caption/image validation, file upload, DB insert
+// - Profile Edit: update user info, profile picture handling
+
+// Each block runs only when triggered by a matching POST + view.
+// Redirects users appropriately after successful operations.
+
 $name = '';
 $surname =  '';
 $email =  '';
@@ -8,7 +19,14 @@ $password =  '';
 $passwordReType = '';
 $errors = [];
 
-// Signup Page Submission, Form Validation & Adding to DB
+// ==============================
+// SIGNUP FORM
+// - Validates signup form fields
+// - Handles optional profile picture upload
+// - Hashes password and inserts new user into DB
+// - Redirects to login with success message
+// ==============================
+
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'signup') {
     // Getting all of the values that have been posted through the form
     $name = trim($_POST['firstname'] ?? '');
@@ -73,7 +91,14 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'signup') {
     }
 }
 
-    // Login Page Submission, Form Validation & Retrieving credentials from DB
+// ==============================
+// LOGIN FORM
+// - Validates login form fields
+// - Verifies password against DB hash
+// - Stores user info in session (excl. password)
+// - Redirects to timeline on success
+// ==============================
+
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'login') {
 
     $email = trim($_POST['email'] ?? '');
@@ -114,7 +139,14 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'login') {
     }
 }
 
-// Reset Password Form
+// ==============================
+// PASSWORD RESET FORM
+// - Validates email and checks if user exists
+// - Validates and hashes new password
+// - Updates password in DB
+// - Redirects to login with reset success message
+// ==============================
+
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'passwordreset') {
     // Getting all of the values that have been posted through the form
     $email = trim($_POST['email'] ?? '');
@@ -150,7 +182,15 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'passwordreset') {
     }
 }
 
-// Adding a new post
+// ==============================
+// ADD POST FORM
+// - Validates caption & optional image upload
+// - Restricts captions to 280 characters
+// - Moves uploaded files into user folder
+// - Inserts post record into DB
+// - Redirects with post success/failure message
+// ==============================
+
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'addpost') {
     
     $caption = trim($_POST['caption'] ?? '');
@@ -227,7 +267,14 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'addpost') {
     }
 }
 
-// Editing the profile infomation
+// ==============================
+// PROFILE EDIT FORM
+// - Validates updated firstname, surname, and bio
+// - Handles new profile picture upload (replaces old file)
+// - Updates user record in DB
+// - Reloads updated user info into session
+// - Redirects back to profile page
+// ==============================
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'profile') {
     // Getting all of the values that have been posted through the form
     $name = trim($_POST['firstname'] ?? '');
@@ -340,4 +387,9 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'profile') {
         exit;
     }
 }
+
+// ==============================
+// END: Authentication & User Management
+// ==============================
+
 ?>

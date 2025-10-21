@@ -1,4 +1,10 @@
-
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
 <!-- A little animated greeting to cheer up the user -->
 <div class="timeline-div">
 <h3 class="welcome-message"><span class="hand-wave">👋</span> Welcome, <?php echo htmlspecialchars($_SESSION['user']['firstname'])?></h3>

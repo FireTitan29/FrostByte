@@ -1,3 +1,10 @@
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
 <div class="div-holder-top-profile" style="margin-bottom: 15px;">
     <div class="window-Profile" style="margin-bottom: 0px;">
         <!-- Edit Profile Information -->

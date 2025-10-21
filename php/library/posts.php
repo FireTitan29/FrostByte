@@ -1,5 +1,15 @@
 <?php 
 
+// Library: posts.php
+// Purpose: Functions for handling post-related logic
+// - didUserLike(): Checks if a specific user has liked a given post
+// - getUserOfPost(): Retrieves the owner (user_id) of a post
+// - includePost(): Decides the correct component to render (with/without image)
+// - findAndDisplayPosts(): Fetches and displays posts (all or by user), ordered by latest
+
+
+// Checks if a user has liked a specific post.
+// Returns: true if liked, false otherwise.
 function didUserLike($user_id, $post_id) {
     $pdo = connectToDatabase();
     $stmt = $pdo->prepare('SELECT 1 FROM post_likes WHERE post_id = :post_id AND user_id = :user_id LIMIT 1');
@@ -15,6 +25,7 @@ function didUserLike($user_id, $post_id) {
 
 }
 
+// Finds the userID of the person who posted the post via the post's ID
 function getUserOfPost($post_id) {
     $pdo = connectToDatabase();
     $stmt = $pdo->prepare('SELECT user_id FROM posts WHERE post_id = :post_id');

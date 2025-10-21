@@ -1,4 +1,18 @@
-<?php $thisUser = getUserDetailsID($_GET['sendto']);?>
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+// Error Handling incase user tampers with link
+if ($_GET['sendto'] == $_SESSION['user']['id'] || !isset($_GET['sendto']) || empty($_GET['sendto'])) {
+    header("Location: index.php?view=messages");
+    exit;
+}
+?>
+<?php $thisUser = getUserDetailsID($_GET['sendto']);
+    readchat($_SESSION['user']['id'], getConversationId($_GET['sendto'], $_SESSION['user']['id']));
+?>
 <div class="reciever-info-window">
     <a class="link-back-messages" href="index.php?view=messages">Back to Inbox</a>
     <a class="goToProfile" href="index.php?view=profileview&user=<?php echo $_GET['sendto']?>">

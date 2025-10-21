@@ -1,3 +1,15 @@
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+// Error Handling incase user tampers with link
+if (!isset($_GET['user']) || empty($_GET['user'])) {
+    header("Location: index.php");
+    exit;
+}
+?>
 <!-- If the user clicks their own name, then they are directed to their own profile -->
 <?php if ((int)$_GET['user'] === $_SESSION['user']['id']) {
     header('Location: index.php?view=profile');

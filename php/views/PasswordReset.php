@@ -1,3 +1,10 @@
+<!-- Stop people from accessing the file directly -->
+<?php
+if (!defined('APP_RUNNING')) {
+    header("Location: ../../index.php");
+    exit;
+}
+?>
 <div class="mainForm-Holder">
     <form class="window-Form" method="POST">
         <div class="linkDiv-Form">Did you have a brain-freeze?</div>
