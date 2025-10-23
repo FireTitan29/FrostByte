@@ -530,7 +530,7 @@ p {
   position: relative;
   display: inline-block;
   width: 250px;
-  margin-right: 10px;
+  /* margin-right: 10px; */
 }
 
 .searchBarInput {
@@ -572,6 +572,7 @@ p {
   display: flex;
   gap: 15px;
   margin-top: 4px;
+  margin-left: 10px;
 }
 
 .icon-holder {
@@ -818,6 +819,20 @@ p {
   transition: var(--transtionTime);
 }
 
+.post {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* Animation when like button is clicked */
 .like-Post.active {
   animation: pop 0.4s ease forwards;
@@ -854,13 +869,13 @@ p {
 
 .sendNewMessage-Top {
   text-align: center;
-  margin-left: 20px;
+  /* margin-left: 20px; */
   margin-top: 20px;
   margin-bottom: 10px;
 }
 
 .window-Message {
-  max-width: 465px;
+  width: 465px;
   display: flex;
   flex-direction: column;
   background-color: var(--myWhite);
@@ -868,15 +883,6 @@ p {
   border-bottom: 2px solid var(--lightBlue);
   border-radius: var(--buttonBorderRadius);
   box-shadow: var(--windowBoxShadow);
-  box-sizing: border-box;
-}
-
-.message-scroll-area {
-  overflow-y: auto;
-  overflow-x: hidden;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 .single-border-Messaging {
@@ -884,7 +890,7 @@ p {
   border: none;
   border-bottom: solid;
   border-color: var(--greyBlue);
-  width: 440px;
+  width: 465px;
   /* margin-top: 8px; */
 }
 
@@ -924,12 +930,14 @@ p {
   border-style: solid;
   border-color: var(--lightBlue);
   border-width: 2px;
+  margin-left: 8px;
 }
 
 .top-holder-Message {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  width: 348px;
 }
 
 .username-Message {
@@ -946,7 +954,7 @@ p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 354px;
+  width: 400px;
   position: relative;
 }
 
@@ -961,7 +969,6 @@ p {
   text-overflow: ellipsis;
   max-width: 280px;
   flex: 1;
-  margin-right: 10px;
 }
 
 .ts {
@@ -969,6 +976,7 @@ p {
   flex-direction: row;
   justify-content: space-around;
   text-align: right;
+  margin-left: 20px;
 }
 
 .timeStamp-Message {
@@ -980,13 +988,6 @@ p {
   display: inline;
   margin-top: 0px;
   width: auto;
-}
-
-.top-holder-Message {
-  display: flex;
-  margin-right: 15px;
-  justify-content: space-between;
-  align-items: flex-start;
 }
 
 /* Add a Post Window */
@@ -1796,4 +1797,21 @@ so that we can make it look like a button the user can click with instructions *
 
 }.declineRequest:hover  {
   background-color: var(--accentPinkDark);
+}
+
+.noConvos {
+  margin-top: 30px;
+  text-align: center;
+  color: var(--lightBlue);
+  font-size: var(--fontMedium);
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.noConvos-bottom {
+  margin-top: 0px;
+  text-align: center;
+  color: var(--accentPink);
+  font-size: var(--fontText);
+  margin-bottom: 50px;
 }

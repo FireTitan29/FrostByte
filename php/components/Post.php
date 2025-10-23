@@ -8,7 +8,7 @@ if (!defined('APP_RUNNING')) {
 <!-- Post Component Blueprint 
      - Defines how a single post appears on the timeline/profile.
      - Populated dynamically via findAndDisplayPosts(). -->
-<div class="window-Profile" id="post-<?php echo cleanHTML($post_id); ?>">
+<div class="window-Profile post" id="post-<?php echo cleanHTML($post_id); ?>">
     <div class="mainBlock-Post">
         <!-- Profile picture: links to the user's profile -->
         <a href="index.php?view=profileview&user=<?php echo cleanHTML($user_id)?>"><img class="smallProfileIcon-Post" src="<?php echo cleanHTML($profilePicture) ?>" alt="PostIcon"></a>

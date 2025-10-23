@@ -72,61 +72,19 @@ function countUnreadMessages($conversation_id, $user_id) {
     return (int) $stmt->fetchColumn();
 }
 
-// Notifications
-function countUnreadNotifications($user_id) {
+// This function counts all active conversations for a user
+function countConversations($user_id) {
     $pdo = connectToDatabase();
     $stmt = $pdo->prepare('
         SELECT COUNT(*) 
-        FROM notifications 
-        WHERE user_id = :userid 
-        AND is_read = 0
+        FROM conversations 
+        WHERE user1_id = :id 
+        OR user2_id = :id
     ');
-    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
 
-    return (int)$stmt->fetchColumn();
+    return (int) $stmt->fetchColumn();
 }
 
-function getNotifications($user_id) {
-        $pdo = connectToDatabase();
-    $stmt = $pdo->prepare('
-        SELECT * 
-        FROM notifications 
-        WHERE user_id = :userid AND is_read = 0
-        ORDER BY created_at DESC
-    ');
-    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// Friend Requests
-function getFriendRequests($user_id) {
-        $pdo = connectToDatabase();
-    $stmt = $pdo->prepare('
-        SELECT * 
-        FROM friend_requests 
-        WHERE user_id = :userid
-        ORDER BY created_at DESC
-    ');
-    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function countFriendRequests($user_id) {
-    $pdo = connectToDatabase();
-
-    $stmt = $pdo->prepare('
-        SELECT COUNT(*) 
-        FROM friend_requests 
-        WHERE user_id = :userid 
-    ');
-    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
-    $stmt->execute();
-
-    return (int)$stmt->fetchColumn();
-}
 ?>

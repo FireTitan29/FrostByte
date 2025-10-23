@@ -314,6 +314,18 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const searchBarMessageForm = document.getElementById("searchBarMessageForm");
   if (searchBarMessageForm) {
-    searchBarMessageForm.addEventListener("submit", searchMessagingListener);
+    searchBarMessageForm.addEventListener("submit", searchMessageListener);
   }
 });
+
+// Animation of the posts for when they load in on a new page
+// this gives them that slide in look
+function animatePosts() {
+  const posts = document.querySelectorAll('.post');
+  posts.forEach((post, i) => {
+    post.style.animationDelay = `${i * 0.1}s`;
+    post.classList.add('fade-in-up');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', animatePosts);

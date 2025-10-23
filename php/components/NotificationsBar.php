@@ -29,7 +29,7 @@
 			<p class="search-placeholder">Search to see results...</p>
 		</div>
     </div>
-
+    
     <div class="notif-icons">
       <!-- Notifications -->
       <div class="icon-holder">

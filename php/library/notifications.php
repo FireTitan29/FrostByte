@@ -1,4 +1,32 @@
 <?php 
+function countUnreadNotifications($user_id) {
+    $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) 
+        FROM notifications 
+        WHERE user_id = :userid 
+        AND is_read = 0
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return (int)$stmt->fetchColumn();
+}
+
+function getNotifications($user_id) {
+        $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT * 
+        FROM notifications 
+        WHERE user_id = :userid AND is_read = 0
+        ORDER BY created_at DESC
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function findAndDisplayNotifications($user_id) {
     $notifications = getNotifications($user_id);
 

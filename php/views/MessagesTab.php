@@ -24,7 +24,14 @@ if (!defined('APP_RUNNING')) {
             </div>
         </div>
     </div>
-    <div class="message-scroll-area">
+    <?php if (countConversations($_SESSION['user']['id']) > 0):  ?>
+    <div>
         <?php findAndDisplayActiveChats($_SESSION['user']['id']) ?>
     </div>
+    <?php else: ?>
+    <div>
+        <p class="noConvos">No conversations yet…</p>
+        <p class="noConvos-bottom">Find someone and say "hello!" <span class="hand-wave">💬</span></p>
+    </div>
+    <?php endif; ?>
 </div>

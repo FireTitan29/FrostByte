@@ -1,4 +1,32 @@
 <?php 
+function getFriendRequests($user_id) {
+        $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT * 
+        FROM friend_requests 
+        WHERE user_id = :userid
+        ORDER BY created_at DESC
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function countFriendRequests($user_id) {
+    $pdo = connectToDatabase();
+
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) 
+        FROM friend_requests 
+        WHERE user_id = :userid 
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return (int)$stmt->fetchColumn();
+}
+
 // This function looks through the DB to see if they users are friends or not
 function alreadyFriendsCheck($sender_id, $receiver_id) {
     $pdo = connectToDatabase();
