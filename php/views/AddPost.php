@@ -26,7 +26,7 @@ if (!defined('APP_RUNNING')) {
     <h3 class="mainHeading-Form"><span class="accentColor">Add a Scoop</span></h3>
     <br>
     <small class="small-error-message"><?php if (isset($errors['image'])) echo $errors['image']; ?></small>
-    <textarea class="captionField-AddPost" name="caption" id="caption" rows="4" placeholder="Add a post caption..."><?php echo htmlspecialchars($caption); ?></textarea>
+    <textarea class="captionField-AddPost" name="caption" id="caption" rows="4" placeholder="Add a post caption..."><?php echo cleanHTML($caption); ?></textarea>
     <small class="small-error-message"><?php if (isset($errors['caption'])) echo $errors['caption']; ?></small>
     <div class="linkDiv-Form">(Optional) Max 4MB</div>
     <span style="margin-bottom: 5px; display:block;"></span>

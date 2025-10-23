@@ -16,7 +16,7 @@ if (!defined('APP_RUNNING')) {
             <div class="picture-info-Profile">
                 <div class="profile-picture-wrapper">
                     <div id="edit-profile-picture-toggle" class="edit-profile-picture-toggle">
-                        <img class="picture-profile" src="<?php echo $_SESSION['user']['profile_pic']?>" alt="profile-picture">
+                        <img class="picture-profile" src="<?php echo cleanHTML($_SESSION['user']['profile_pic'])?>" alt="profile-picture">
                         <div class="overlay-text">Edit Picture</div>
                 </div>
                 <div class="profile-picture-wrapper">
@@ -34,23 +34,23 @@ if (!defined('APP_RUNNING')) {
                         <div class="user-info">
                             <small class="small-error-message-profile"><?php if (isset($errors['firstname'])) echo $errors['firstname']; ?></small>
                             <input class="username-Profile-edit" name="firstname" placeholder="First Name" value="<?php if (isset($_POST['firstname'])) {
-                                                                                                            echo htmlspecialchars($_POST['firstname']); 
+                                                                                                            echo cleanHTML($_POST['firstname']); 
                                                                                                             } else {
-                                                                                                                echo htmlspecialchars($_SESSION['user']['firstname']);}?>">
+                                                                                                                echo cleanHTML($_SESSION['user']['firstname']);}?>">
 
                             <span style="margin-left: 5px;"></span>
                             <small class="small-error-message-profile"><?php if (isset($errors['surname'])) echo $errors['surname']; ?></small>
                             <input class="username-Profile-edit" name="surname" placeholder="Surname" value="<?php if (isset($_POST['surname'])) {
-                                                                                                            echo htmlspecialchars($_POST['surname']); 
+                                                                                                            echo cleanHTML($_POST['surname']); 
                                                                                                             } else {
-                                                                                                                echo htmlspecialchars($_SESSION['user']['surname']);}?>">
-                            <span class="email-Profile"><?php echo htmlspecialchars($_SESSION['user']['email'])?></span>
+                                                                                                                echo cleanHTML($_SESSION['user']['surname']);}?>">
+                            <span class="email-Profile"><?php echo cleanHTML($_SESSION['user']['email'])?></span>
                         </div>
                     </div>
                     <textarea name="profile_bio" id="profile_bio" class="bio-Profile-edit" rows="3"><?php if (isset($_POST['profile_bio'])) {
-                                                                                                            echo htmlspecialchars($_POST['profile_bio']); 
+                                                                                                            echo cleanHTML($_POST['profile_bio']); 
                                                                                                             } else {
-                                                                                                                echo htmlspecialchars($_SESSION['user']['profile_bio']);
+                                                                                                                echo cleanHTML($_SESSION['user']['profile_bio']);
                                                                                                             }?></textarea>
                     <small class="small-error-message"><?php if (isset($errors['bio'])) echo $errors['bio']; ?></small>
                 </div>
@@ -69,19 +69,19 @@ if (!defined('APP_RUNNING')) {
         <!-- Normal Profile -->
         <?php else: ?>
         <div class="picture-info-Profile">
-            <img class="picture-profile" src="<?php echo $_SESSION['user']['profile_pic']?>" alt="profile-picture">
+            <img class="picture-profile" src="<?php echo cleanHTML($_SESSION['user']['profile_pic'])?>" alt="profile-picture">
             <div class="name-bio-Profile">
                 <div class="top-holder-Profile">
                     <div class="user-info">
-                        <h3 class="username-Profile"><?php echo htmlspecialchars($_SESSION['user']['fullname'])?></h3>
-                        <span class="gender-Profile">(<?php echo htmlspecialchars($_SESSION['user']['gender'])?>)</span><br>
-                        <span class="email-Profile"><?php echo htmlspecialchars($_SESSION['user']['email'])?></span><br>
+                        <h3 class="username-Profile"><?php echo cleanHTML($_SESSION['user']['fullname'])?></h3>
+                        <span class="gender-Profile">(<?php echo cleanHTML($_SESSION['user']['gender'])?>)</span><br>
+                        <span class="email-Profile"><?php echo cleanHTML($_SESSION['user']['email'])?></span><br>
                     </div>
                     <div class="settings-holder">
                         <button onclick="slideOutSettings()" class="button-Profile settings-button"><img src="icons/Settings<?php if ($_SESSION['user']['theme'] === 'dark'){ echo "-Dark";}?>.svg" alt="Settings" class="settings-icon"></button>
                     </div>
                 </div>
-                <p class="bio-Profile"><?php echo htmlspecialchars($_SESSION['user']['profile_bio'])?></p>
+                <p class="bio-Profile"><?php echo cleanHTML($_SESSION['user']['profile_bio'])?></p>
             </div>
         </div>
         <!-- Buttons Normal -->
@@ -116,5 +116,3 @@ if (!defined('APP_RUNNING')) {
 <?php if(!findAndDisplayPosts($_SESSION['user']['id'])): ?>
   <h3 class="noPosts-Text">No Posts Yet...</h3>
 <?php endif; ?> 
-
-<script src="js/like_post.js"></script>

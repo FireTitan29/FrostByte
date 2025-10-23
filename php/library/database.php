@@ -72,6 +72,7 @@ function countUnreadMessages($conversation_id, $user_id) {
     return (int) $stmt->fetchColumn();
 }
 
+// Notifications
 function countUnreadNotifications($user_id) {
     $pdo = connectToDatabase();
     $stmt = $pdo->prepare('
@@ -98,5 +99,34 @@ function getNotifications($user_id) {
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Friend Requests
+function getFriendRequests($user_id) {
+        $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT * 
+        FROM friend_requests 
+        WHERE user_id = :userid
+        ORDER BY created_at DESC
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function countFriendRequests($user_id) {
+    $pdo = connectToDatabase();
+
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) 
+        FROM friend_requests 
+        WHERE user_id = :userid 
+    ');
+    $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return (int)$stmt->fetchColumn();
 }
 ?>

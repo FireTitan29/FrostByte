@@ -19,7 +19,7 @@ if (!defined('APP_RUNNING')) {
         <h3 class="mainHeading-Form"><span class="accentColor">Login</span> to FrostByte</h3>
         <span style="margin-bottom: 25px; display:block;"></span>
         <small class="small-error-message"><?php if (isset($errors['email'])) echo $errors['email'];?></small>
-        <input class="textInput-Form" type="text" placeholder="Email Address" name="email" value="<?php echo $email ?>">
+        <input class="textInput-Form" type="text" placeholder="Email Address" name="email" value="<?php echo cleanHTML($email) ?>">
         <br>
         <input class="textInput-Form" type="password" placeholder="Password" style="margin-bottom: 10px;" name='password'>
         <span style="margin-bottom: 5px; display:block;"></span>

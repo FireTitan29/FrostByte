@@ -90,6 +90,11 @@
         return ["Destination_Path" => $destPath, 
                 "Full_Path" => $fullPath ];
     }
+
+    // Easier to write 'cleanHTML' than all the other stuff when escaping the HTML
+    function cleanHTML($phpEchoText) {
+        return (string) htmlspecialchars($phpEchoText, ENT_QUOTES, 'UTF-8');
+    }
     
     // -----------------------------------------------------------
     // LIBRARY INCLUDES
@@ -98,7 +103,8 @@
     include 'library/database.php';
     include 'library/validation.php';
     include 'library/notifications.php';
+    include 'library/friendRequests.php';
+    include 'library/posts.php';
     include 'library/authentication.php';
     include 'library/messages.php';
-    include 'library/posts.php';
 ?>

@@ -9,12 +9,12 @@
 <?php if ($sessionActive): ?>; 
   <?php   
     $numNotifications = countUnreadNotifications($_SESSION['user']['id']); 
-    $numFriendRequests = 0 // countUnreadNotifications($_SESSION['user']['id']); 
+    $numFriendRequests = countFriendRequests($_SESSION['user']['id']); 
   ?>
 <div class="notifications-holder">
   <nav class="notifications-bar">
     <!-- Logo (left side) -->
-    <img src="icons/logo<?php if ($_SESSION['user']['theme'] === 'dark'){ echo "-Dark";}?>.svg" class="logo" alt="logo">
+    <img src="icons/logo<?php if (cleanHTML($_SESSION['user']['theme']) === 'dark'){ echo "-Dark";}?>.svg" class="logo" alt="logo">
 
     <!-- Icons & SearchBar (right side) -->
     <div class="searchWrapper">
@@ -37,12 +37,12 @@
           <img src="icons/Notifications.svg" alt="Notifications">
         </button>
         <?php if ($numNotifications != 0): ?>
-          <span id="notificationBadge" class="notifications-badge"><?php echo htmlspecialchars($numNotifications)?></span>
+          <span id="notificationBadge" class="notifications-badge"><?php echo cleanHTML($numNotifications)?></span>
         <?php endif;?>
       </div>
       <div id="notifications" class="notificationsResults">
 			  <p class="search-placeholder">Notifications</p>
-        <?php findAndDisplayNotifications($_SESSION['user']['id']) ?>
+        <?php findAndDisplayNotifications(cleanHTML($_SESSION['user']['id'])) ?>
 		  </div>
 
       <!-- Friend Requests -->
@@ -51,12 +51,12 @@
           <img src="icons/FriendRequest.svg" alt="Friend Requests">
         </button>
         <?php if ($numFriendRequests != 0): ?>
-          <span id="friendRequestBadge" class="notifications-badge"><?php echo htmlspecialchars($numFriendRequests)?></span>
+          <span id="friendRequestBadge" class="notifications-badge"><?php echo cleanHTML($numFriendRequests)?></span>
         <?php endif; ?>
       </div>
       <div id="friendrequests" class="notificationsResults">
 			  <p class="search-placeholder">Friend Requests</p>
-        <?php //findAndDisplayFriendRequests($_SESSION['user']['id']) ?>
+        <?php findAndDisplayFriendRequests($_SESSION['user']['id']); ?>
 		  </div>
     </div>
   </nav>
@@ -70,36 +70,3 @@
 </div>
 <?php endif; ?>
 <span class="gap"></span>
-
-<script>
-  function showNotifications(id) {
-    const notifBox = document.getElementById(id);
-
-    // Hide all open dropdowns first
-    document.querySelectorAll(".notificationsResults").forEach(box => {
-      if (box !== notifBox) box.style.display = "none";
-    });
-
-    // Toggle this one
-    notifBox.style.display = notifBox.style.display === "block" ? "none" : "block";
-
-    fetch('php/controllers/ReadNotifications.php', {
-      method: 'POST'
-    });
-    document.getElementById("notificationBadge").style.display = "none";
-  }
-
-  // Hide if clicked outside ANY notifications box or its button
-  document.addEventListener("click", function(event) {
-    const isButton = event.target.closest(".icon-holder button");
-    const isBox = event.target.closest(".notificationsResults");
-
-    if (!isButton && !isBox) {
-      document.querySelectorAll(".notificationsResults").forEach(box => {
-        box.style.display = "none";
-      });
-    }
-  });
-
-
-</script>

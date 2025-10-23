@@ -81,11 +81,16 @@ function findAndDisplayMessages($send_to, $user_id)
 
 function findAndDisplayActiveChats($user_id) {
 $pdo = connectToDatabase();
-// Get all conversations this user is part of
+
+// Get all conversations this user is part of and order them so that
+// the user can see the latest chats first
 $stmt = $pdo->prepare('
-    SELECT conversation_id, user1_id, user2_id 
-    FROM conversations 
-    WHERE user1_id = :user_id OR user2_id = :user_id
+    SELECT c.conversation_id, c.user1_id, c.user2_id, MAX(m.created_at) AS last_message_time
+    FROM conversations c
+    LEFT JOIN messages m ON c.conversation_id = m.conversation_id
+    WHERE c.user1_id = :user_id OR c.user2_id = :user_id
+    GROUP BY c.conversation_id, c.user1_id, c.user2_id
+    ORDER BY last_message_time DESC
 ');
 $stmt->bindValue(':user_id', $user_id);
 $stmt->execute();

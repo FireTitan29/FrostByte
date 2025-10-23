@@ -118,6 +118,36 @@ p {
   margin-left: 15px;
 }
 
+.button-Profile-inactive {
+  background-color: var(--greyBlue);
+  color: var(--myWhite);
+  border-style: var(--buttonBorderStyle);
+  border-radius: var(--buttonBorderRadius);
+  transition: var(--transtionTime);
+  font-size: var(--fontText);
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+  margin-top: 5px;
+  width: 90px;
+  margin-left: 15px;
+}
+
+.button-Profile-friends {
+  background-color: var(--neonBlue);
+  color: var(--myWhite);
+  border-style: var(--buttonBorderStyle);
+  border-radius: var(--buttonBorderRadius);
+  transition: var(--transtionTime);
+  font-size: var(--fontText);
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+  margin-top: 5px;
+  width: 90px;
+  margin-left: 15px;
+}
+
 .button-Profile-friend {
   width: 150px;
 }
@@ -140,7 +170,7 @@ p {
 .button-Profile:hover,
 .settings-button:hover,
 .button-Profile-friend:hover,
-.button-Message:hover {
+.button-Message:hover, .friendRequestButton:hover {
   background-color: var(--accentPink);
   cursor: pointer;
   transform: scale(1.05);
@@ -1725,4 +1755,45 @@ so that we can make it look like a button the user can click with instructions *
   margin-top: 0;
   margin-bottom: 0;
   transition: var(--transtionTime);
+}
+
+.friendRequest-icon {
+  width: 25px;
+  margin-right: 5px;
+  display: inline;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: var(--transtionTime);
+}
+
+.friendRequestForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.friendRequestButton {
+  border-style: none;
+  padding: 5px 8px 5px 8px;
+  color: var(--lightWhite);
+  border-radius: var(--buttonBorderRadius);
+  transition: var(--transtionTime);
+}
+
+.acceptRequest {
+  background-color: var(--lightBlue);
+}
+
+.acceptRequest:hover {
+    background-color: var(--neonBlue);
+}
+
+.declineRequest {
+  background-color: var(--accentPink);
+
+}.declineRequest:hover  {
+  background-color: var(--accentPinkDark);
 }

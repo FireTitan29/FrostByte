@@ -115,20 +115,6 @@ function sendMessage(event) {
     location.reload();});
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("searchBarForm");
-  if (form) {
-    form.addEventListener("submit", searchSubmitListener);
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("searchBarMessageForm");
-  if (form) {
-    form.addEventListener("submit", searchMessageListener);
-  }
-});
-
 async function searchSubmitListener(event) {
 	// stop page reload
   event.preventDefault(); 
@@ -184,3 +170,150 @@ function showSearchResults(data, view, variable) {
     }
   }
 }
+
+// Notifications / Friend Request 
+
+  function showNotifications(id) {
+    const notifBox = document.getElementById(id);
+
+    // Hide all open dropdowns first
+    document.querySelectorAll(".notificationsResults").forEach(box => {
+      if (box !== notifBox) box.style.display = "none";
+    });
+
+    // Toggle this one
+    notifBox.style.display = notifBox.style.display === "block" ? "none" : "block";
+
+    fetch('php/controllers/ReadNotifications.php', {
+      method: 'POST'
+    });
+    document.getElementById("notificationBadge").style.display = "none";
+  }
+
+  // Hide if clicked outside ANY notifications box or its button
+  document.addEventListener("click", function(event) {
+    const isButton = event.target.closest(".icon-holder button");
+    const isBox = event.target.closest(".notificationsResults");
+
+    if (!isButton && !isBox) {
+      document.querySelectorAll(".notificationsResults").forEach(box => {
+        box.style.display = "none";
+      });
+    }
+  });
+
+  function sendFriendRequest(event) {
+
+    // Prevent default form reload
+    event.preventDefault();
+    
+    let sender = document.getElementById("friendSender").value;
+    let receiver = document.getElementById("friendReceiver").value;
+    
+    fetch('php/controllers/sendFriendRequest.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 
+        'sender=' + encodeURIComponent(sender) +
+        '&receiver=' + encodeURIComponent(receiver)
+    }).then(() => {
+
+    // Reload page to show updated chat box
+    location.reload();});
+}
+
+function unFriend(event) {
+
+    // Prevent default form reload
+    event.preventDefault();
+    
+    let user1 = document.getElementById("friendSenderDelete").value;
+    let user2 = document.getElementById("friendReceiverDelete").value;
+    
+    fetch('php/controllers/unfriend.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 
+        'user1=' + encodeURIComponent(user1) +
+        '&user2=' + encodeURIComponent(user2)
+    }).then(() => {
+
+    // Reload page to show updated chat box
+    location.reload();});
+}
+
+function cancelFriendRequest(event) {
+
+    // Prevent default form reload
+    event.preventDefault();
+    
+    let user1 = document.getElementById("friendSenderPending").value;
+    let user2 = document.getElementById("friendReceiverPending").value;
+    let request = document.getElementById("requestIDPending").value;
+    
+    fetch('php/controllers/declineFriendRequest.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 
+      'sender=' + encodeURIComponent(user1) +
+      '&user=' + encodeURIComponent(user2) +
+      '&request=' + encodeURIComponent(request)
+    }).then(() => {
+
+    // Reload page to show updated chat box
+    location.reload();});
+}
+
+function outcomeFriendRequest(event, action) {
+        event.preventDefault();
+
+        let form = event.target.closest(".friendRequestForm");
+        let sender = form.querySelector("[name=sender_id]").value;
+        let user = form.querySelector("[name=user_id]").value;
+        let requestID = form.querySelector("[name=request_id]").value;
+        let notificationHolder = document.getElementById(`friendRequest_${requestID}`);
+        let badge = document.getElementById(`friendRequestBadge`);
+
+        fetch(`php/controllers/${action}FriendRequest.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:
+                'sender=' + encodeURIComponent(sender) +
+                '&user=' + encodeURIComponent(user) +
+                '&request=' + encodeURIComponent(requestID)
+        }).then(() => {
+            notificationHolder.style.display = "none";
+
+            if (badge) {
+                let number = parseInt(badge.textContent, 10) || 0;
+                number = Math.max(0, number - 1);
+                if (number === 0) {
+                    badge.style.display = "none";
+                } else {
+                    badge.textContent = number;
+                }
+            }
+        });
+    }
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("searchBarForm");
+  if (form) {
+    form.addEventListener("submit", searchSubmitListener);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("searchBarMessageForm");
+  if (form) {
+    form.addEventListener("submit", searchMessageListener);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchBarMessageForm = document.getElementById("searchBarMessageForm");
+  if (searchBarMessageForm) {
+    searchBarMessageForm.addEventListener("submit", searchMessagingListener);
+  }
+});

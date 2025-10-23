@@ -7,7 +7,6 @@
 // - Decides which view to include based on current user state
 // - Handles theme loading (dark/light mode)
 // -----------------------------------------------------------
-
     define('APP_RUNNING', true); 
     include 'php/main.php'; 
 ?>
@@ -73,6 +72,14 @@
     <!-- JavaScript -->
     <?php if ($view === 'addpost' || $view === 'signup' || $view === 'profile'): ?>
         <script src="js/live_image_viewer.js"></script>
+    <?php endif; ?>
+
+    <?php if ($view === 'profile' || $view === 'timeline' || $view === 'profileview'): ?>
+        <script src="js/like_post.js"></script>
+    <?php endif; ?>
+
+    <?php if ($view === 'chat'): ?>
+        <script src="js/chatbox.js"></script>
     <?php endif; ?>
 
     <script src="js/main.js" defer></script>

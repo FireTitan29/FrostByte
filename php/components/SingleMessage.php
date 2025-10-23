@@ -18,15 +18,15 @@ if (!defined('APP_RUNNING')) {
 <div class="single-border-Messaging">
 <form method="GET" action="index.php">
     <!-- Label wraps the entire contact preview for accessibility -->
-    <label for="button-<?php echo $thisUserID?>">
+    <label for="button-<?php echo cleanHTML($thisUserID)?>">
         <div class="single-contact-Messaging">
             <div class="picture-info-Profile">
                 
                 <!-- Contact's profile picture -->
                 <div class="profile-pic-container">
-                    <img class="picture-profile-Message" src="<?php echo $profilePicture ?>" alt="profile-picture">
+                    <img class="picture-profile-Message" src="<?php echo cleanHTML($profilePicture) ?>" alt="profile-picture">
                     <?php if ($unreadMessages != 0): ?>
-                        <span class="notification-badge-messages"><?php echo htmlspecialchars($unreadMessages) ?></span>
+                        <span class="notification-badge-messages"><?php echo cleanHTML($unreadMessages) ?></span>
                     <?php endif?>
                 </div>
                 <div class="name-bio-Profile">
@@ -34,23 +34,22 @@ if (!defined('APP_RUNNING')) {
 
                         <!-- Contact’s name and email -->
                         <div class="user-info">
-                            <h3 class="username-Message"><?php echo htmlspecialchars($sendTo['firstname'] . ' ' . $sendTo['surname'])?></h3>
-                            <span class="email-Profile"><?php echo htmlspecialchars($sendTo['email'])?></span>
+                            <h3 class="username-Message"><?php echo cleanHTML($sendTo['firstname'] . ' ' . $sendTo['surname'])?></h3>
+                            <span class="email-Profile"><?php echo cleanHTML($sendTo['email'])?></span>
                         </div>
 
                         <!-- Hidden form inputs so that when user clicks "Message" it loads chat view -->
                         <input hidden name="view" value="chat"></input>
-                        <input hidden name="sendto" value="<?php echo $thisUserID?>"></input>
+                        <input hidden name="sendto" value="<?php echo cleanHTML($thisUserID)?>"></input>
 
                         <!-- Button to navigate into chat -->
-                        <button id="button-<?php echo $thisUserID?>" type="submit" class="button-Message">Message</button>
+                        <button id="button-<?php echo cleanHTML($thisUserID)?>" type="submit" class="button-Message">Message</button>
                     </div>
 
                     <!-- Display of the last message and its timestamp -->
                     <div class="lastMessage-Holder">
-                        <p class="last-Message"><?php echo $textBody?></p><div class="ts"><p class="timeStamp-Message"><?php echo $formattedTime?></p></div>
-                    </div>
-                    
+                        <p class="last-Message"><?php echo htmlspecialchars_decode(cleanHTML($textBody))?></p><div class="ts"><p class="timeStamp-Message"><?php echo cleanHTML($formattedTime)?></p></div>
+                    </div>             
                 </div>
             </div>
         </div>

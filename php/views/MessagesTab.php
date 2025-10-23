@@ -28,7 +28,3 @@ if (!defined('APP_RUNNING')) {
         <?php findAndDisplayActiveChats($_SESSION['user']['id']) ?>
     </div>
 </div>
-
-<script>
-    document.getElementById('searchBarMessageForm').addEventListener('submit', searchMessagingListener);
-</script>
