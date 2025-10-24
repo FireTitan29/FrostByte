@@ -80,6 +80,7 @@
 
             addNotification(getUserOfPost($post_id), $user_id, 'unliked your post');
         }
+        closeDatabase($pdo);
         exit;
     } else {
         // Block direct URL access (no POST data), send user back to index (home)

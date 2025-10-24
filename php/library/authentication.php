@@ -85,6 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'signup') {
             $stmt->bindValue(':profile_pic', $destPath);
 
             $stmt->execute();
+            closeDatabase($pdo);
             header("Location: index.php?view=login&signup=success");
             exit;
         }
@@ -176,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'passwordreset') {
         $stmt->bindValue(':password', $hashedPassword);
 
         $stmt->execute();
-
+        closeDatabase($pdo);
         header("Location: index.php?view=login&reset=success");
         exit;
     }
@@ -382,7 +383,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'profile') {
             'profile_bio' => $user['profile_bio'],       
             'theme' => $user['theme'],       
         ];
-
+        closeDatabase($pdo);
         header("Location: index.php?view=profile");
         exit;
     }

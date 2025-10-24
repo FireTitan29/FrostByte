@@ -59,6 +59,7 @@
         $stmt->bindValue(':sender', $user_id);
         $stmt->bindValue(':textmessage', $textMessage);
         $stmt->execute();
+        closeDatabase($pdo);
 
         addNotification($receiver_id, $user_id, 'sent you a message');
 

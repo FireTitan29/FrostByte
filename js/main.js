@@ -1,12 +1,26 @@
 // -----------------------------------------------------------
 // main.js
 // Purpose: Handles client-side interactivity (theme toggle, 
-// settings window, likes, and chat messaging).
+// settings window, likes, chat messaging, user search, notifications,
+// friend requests, feedback messages, and post animations).
 // Functions:
 // - changeTheme(): Switches between light/dark mode, updates DB
 // - slideOutSettings(): Toggles settings panel visibility
 // - likePost(): Updates like counter, toggles heart icon, notifies DB
 // - sendMessage(): Sends chat message via fetch and reloads chat
+// - searchSubmitListener(): Handles searching for users from the main search bar.
+// - searchMessageListener(): Handles searching for users when starting a new message.
+// - searchForUser(): Sends a query to PHP and returns user results.
+// - showSearchResults(): Renders search results into the DOM.
+// - showNotifications(): Toggles notification dropdowns, marks notifications as read.
+// - sendFriendRequest(): Sends a friend request via fetch.
+// - unFriend(): Removes a friend via fetch.
+// - cancelFriendRequest(): Cancels a pending friend request.
+// - outcomeFriendRequest(): Accepts or declines friend requests, updates badge count.
+// - showPositiveMessage(): Displays positive feedback messages.
+// - showNegativeMessage(): Displays negative feedback messages.
+// - showFeedbackMessage(): Displays neutral feedback messages.
+// - animatePosts(): Animates posts on page load with a slide-in effect.
 // -----------------------------------------------------------
 
 // Switches between light/dark mode and Updates the theme in user table
@@ -115,6 +129,10 @@ function sendMessage(event) {
     location.reload();});
 }
 
+// ------------------
+// Search Functions
+// ------------------
+
 async function searchSubmitListener(event) {
 	// stop page reload
   event.preventDefault(); 
@@ -149,6 +167,7 @@ async function searchForUser(find) {
   return data;
 }
 
+// prints out the results into the search results div
 function showSearchResults(data, view, variable) {
   let resultsDiv = document.getElementById("searchResults"+view);
   resultsDiv.innerHTML = "";
@@ -170,9 +189,9 @@ function showSearchResults(data, view, variable) {
     }
   }
 }
-
+// --------------------------------
 // Notifications / Friend Request 
-
+// --------------------------------
   function showNotifications(id) {
     const notifBox = document.getElementById(id);
 
@@ -264,6 +283,8 @@ function cancelFriendRequest(event) {
     location.reload();});
 }
 
+// Depending on the action of the user, a friend request will be accepted
+// and the users will become friends or deleted
 function outcomeFriendRequest(event, action) {
         event.preventDefault();
 
@@ -274,6 +295,7 @@ function outcomeFriendRequest(event, action) {
         let notificationHolder = document.getElementById(`friendRequest_${requestID}`);
         let badge = document.getElementById(`friendRequestBadge`);
 
+        // Fetching the right PHP controller depending on the user's action
         fetch(`php/controllers/${action}FriendRequest.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -282,8 +304,10 @@ function outcomeFriendRequest(event, action) {
                 '&user=' + encodeURIComponent(user) +
                 '&request=' + encodeURIComponent(requestID)
         }).then(() => {
+            // Once actioned, the friend request should be hidden
             notificationHolder.style.display = "none";
-
+            
+            // then decrease the request counter or if the counter is 0, hide it
             if (badge) {
                 let number = parseInt(badge.textContent, 10) || 0;
                 number = Math.max(0, number - 1);
@@ -296,7 +320,9 @@ function outcomeFriendRequest(event, action) {
         });
     }
 
+// -----------------
 // Event Listeners
+// -----------------
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("searchBarForm");
   if (form) {
@@ -316,6 +342,60 @@ document.addEventListener("DOMContentLoaded", () => {
   if (searchBarMessageForm) {
     searchBarMessageForm.addEventListener("submit", searchMessageListener);
   }
+});
+
+function showPositiveMessage(duration = 3000) {
+	const msg = document.querySelector('.positive-feedback-message-holder');
+	if (!msg) return;
+
+	msg.style.opacity = '1'; // make sure it shows
+
+	setTimeout(() => {
+		msg.style.opacity = '0'; 
+		setTimeout(() => {
+		msg.style.display = 'none'; // fully remove from layout
+		}, 500); // matches transition time
+	}, duration);
+}
+
+function showNegativeMessage(duration = 3000) {
+	const msg = document.querySelector('.negative-feedback-message-holder');
+	if (!msg) return;
+
+	msg.style.opacity = '1';
+
+	setTimeout(() => {
+		msg.style.opacity = '0'; 
+		setTimeout(() => {
+		msg.style.display = 'none';
+		}, 500);
+	}, duration);
+}
+
+function showFeedbackMessage(duration = 3000) {
+	const msg = document.querySelector('.UXFeedback');
+	if (!msg) return;
+
+	msg.style.opacity = '1';
+
+	setTimeout(() => {
+		msg.style.opacity = '0'; 
+		setTimeout(() => {
+		msg.style.display = 'none';
+		}, 500);
+	}, duration);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.querySelector('[data-autoshow="positive"]')) {
+        showPositiveMessage(2000);
+    }
+    if (document.querySelector('[data-autoshow="negative"]')) {
+        showNegativeMessage(2000);
+    }
+	if (document.querySelector('[data-autoshow="normal"]')) {
+        showFeedbackMessage(2000);
+    }
 });
 
 // Animation of the posts for when they load in on a new page

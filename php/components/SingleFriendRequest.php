@@ -1,3 +1,9 @@
+<!-- Component: SingleFriendRequest.php
+Purpose: Renders a single friend request notification in the UI
+    - Displays sender's profile picture and name with a short message
+    - Provides "Accept" and "Decline" buttons to handle the request
+    - Buttons trigger outcomeFriendRequest(event, action) in JS for handling-->
+
 <div class="notification-text-holder" id="friendRequest_<?php echo cleanHTML($requestId)?>">
     <div class="message-icon-holder-notification">
         <img src="<?php echo cleanHTML($sender['profile_pic'])?>" class="friendRequest-icon" alt="like">

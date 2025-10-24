@@ -1,4 +1,9 @@
 <?php
+    // Controller: Decline Friend Request
+    // - Handles the removal of a pending friend request
+    // - Expects POST data with sender, user, and request IDs
+    // - Calls removeFriendRequest() to delete the request
+    // - Redirects to homepage if accessed directly without POST
     session_start();
 
     include '../library/database.php';
@@ -13,6 +18,7 @@
         
         // removing the request
         removeFriendRequest($request);
+        closeDatabase($pdo);
 
     } else {
         // Block direct URL access (no POST data), send user back to index (home)

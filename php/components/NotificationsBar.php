@@ -1,5 +1,12 @@
-<!-- Stop people from accessing the file directly -->
+<!--
+NotificationsBar.php
+This component displays the notifications bar at the top of the page.
+It handles displaying the logo, search bar, notification icons, and friend requests.
+If the user session is not active, it displays a simplified bar with just the logo.
+-->
+
 <?php 
+  // Session check: Prevent direct access to this file
   if (!defined('APP_RUNNING')) {
       header("Location: ../../index.php");
       exit;
@@ -8,6 +15,7 @@
 
 <?php if ($sessionActive): ?>; 
   <?php   
+    // Notification counters: Count unread notifications and friend requests for the logged-in user
     $numNotifications = countUnreadNotifications($_SESSION['user']['id']); 
     $numFriendRequests = countFriendRequests($_SESSION['user']['id']); 
   ?>
@@ -18,20 +26,21 @@
 
     <!-- Icons & SearchBar (right side) -->
     <div class="searchWrapper">
+      <!-- Search bar form -->
       <form method="get" class="searchBarForm" id="searchBarForm">
           <input type="text" id="searchInput" class="searchBarInput" placeholder="Search..." autocomplete="off">
           <button class="hidden-button" type="submit">
             <img src="icons/Search.svg" class="searchIconInside" alt="Search">
           </button>
       </form>
-    <!-- results will appear here -->
+    <!-- Search results will appear here -->
 		<div id="searchResultsprofileview" class="searchResults">
 			<p class="search-placeholder">Search to see results...</p>
 		</div>
     </div>
     
     <div class="notif-icons">
-      <!-- Notifications -->
+      <!-- Notifications icon and dropdown -->
       <div class="icon-holder">
         <button class="hidden-button" onclick="showNotifications('notifications')">
           <img src="icons/Notifications.svg" alt="Notifications">
@@ -45,7 +54,7 @@
         <?php findAndDisplayNotifications(cleanHTML($_SESSION['user']['id'])) ?>
 		  </div>
 
-      <!-- Friend Requests -->
+      <!-- Friend Requests icon and dropdown -->
       <div class="icon-holder">
         <button class="hidden-button" onclick="showNotifications('friendrequests')">
           <img src="icons/FriendRequest.svg" alt="Friend Requests">
@@ -65,6 +74,7 @@
 <?php else: ?>
   <div class="notifications-holder">
   <nav class="signUp-bar">
+    <!-- Simple logo bar for non-logged-in users -->
     <img src="icons/logo.svg" class="logo" alt="logo">
   </nav>
 </div>

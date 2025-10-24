@@ -1,4 +1,13 @@
-<!-- Stop people from accessing the file directly -->
+<!-- 
+    ViewProfile.php
+    This file displays the profile page of a user other than the currently logged-in user.
+    It prevents direct access, handles redirection if a user tries to view their own profile via this page,
+    fetches the profile data of the specified user, shows profile details including friend count and bio,
+    and provides action buttons to message, add friend, cancel friend request, or unfriend.
+    If the user has no posts, it displays a "No Posts Yet..." message.
+-->
+    
+<!-- Prevent people from accessing the file directly -->
 <?php
 if (!defined('APP_RUNNING')) {
     header("Location: ../../index.php");
@@ -10,12 +19,12 @@ if (!isset($_GET['user']) || empty($_GET['user'])) {
     exit;
 }
 ?>
-<!-- If the user clicks their own name, then they are directed to their own profile -->
+<!-- Handle self-profile redirect -->
 <?php if ((int)$_GET['user'] === $_SESSION['user']['id']) {
     header('Location: index.php?view=profile');
     exit;
 } ?>
-<!-- or they are sent to the other user's profile -->
+<!-- Fetch user data and friendship status -->
 <?php $thisUserID = $_GET['user'];
     $thisUser = getUserDetailsID($thisUserID); 
     $friends = alreadyFriendsCheck($_SESSION['user']['id'], $thisUserID);    
@@ -24,6 +33,7 @@ if (!isset($_GET['user']) || empty($_GET['user'])) {
 <div class="div-holder-top-profile" style="margin-bottom: 15px;">
     <div class="window-Profile" style="margin-bottom: 0px;">
         <div class="picture-info-Profile">
+            <!-- Profile header info: picture, name, gender, email -->
             <img class="picture-profile" src="<?php echo $thisUser['profile_pic']?>" alt="profile-picture">
             <div class="name-bio-Profile">
                 <div class="top-holder-Profile">
@@ -32,11 +42,20 @@ if (!isset($_GET['user']) || empty($_GET['user'])) {
                         <span class="gender-Profile">(<?php echo cleanHTML($thisUser['gender'])?>)</span><br>
                         <span class="email-Profile"><?php echo cleanHTML($thisUser['email'])?></span><br>
                     </div>
+                    <!-- Friend count display -->
+                    <div style="display: flex; margin-right: 5px">
+                    <img src="icons/FriendsCount.svg" alt="FriendsIcon" class="friendsIcon">
+                    <div class="friends-Holder">
+                        <span class="friends-counter"><?php echo cleanHTML(countFriends($thisUserID)) ?></span>
+                        <span class="friends-text">Friends</span>
+                    </div>
+                    </div>
                 </div>
+                <!-- Bio section -->
                 <p class="bio-Profile"><?php echo cleanHTML($thisUser['profile_bio'])?></p>
             </div>
         </div>
-        <!-- Buttons Normal -->
+        <!-- Action buttons: Message, Add Friend, Pending, Friends -->
         <div class="buttons-Profile">
             <form method="GET" action="index.php">
                 <input hidden name="view" value="chat">
@@ -66,6 +85,7 @@ if (!isset($_GET['user']) || empty($_GET['user'])) {
         </div>
     </div>
 </div>
+<!-- Display posts or "No Posts Yet" message -->
 <?php if(!findAndDisplayPosts($_GET['user'])): ?>
   <h3 class="noPosts-Text">No Posts Yet...</h3>
 <?php endif; ?> 

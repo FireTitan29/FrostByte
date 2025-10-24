@@ -22,6 +22,7 @@
         $stmt->execute();
 
         $_SESSION['user']['theme'] = $theme;
+        closeDatabase($pdo);
         exit;
     } else {
         // If the user comes to this file directly (no post), then send them back to the index page

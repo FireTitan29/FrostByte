@@ -19,10 +19,13 @@ function didUserLike($user_id, $post_id) {
 
     $stmt->execute();
     $result =  $stmt->fetchColumn();
+    closeDatabase($pdo);
+
     if (!$result) {
         return false;
     }
-        return true;
+
+    return true;
 
 }
 
@@ -33,6 +36,7 @@ function getUserOfPost($post_id) {
     $stmt->bindValue(':post_id', $post_id);
     $stmt->execute();
     $result =  $stmt->fetchColumn();
+    closeDatabase($pdo);
 
     return $result;
 }
@@ -52,6 +56,7 @@ function addPostToDB($caption, $imagePath = '') {
     $stmt->bindValue(':image_path', $imagePath, PDO::PARAM_STR);
     
     $stmt->execute();
+    closeDatabase($pdo);
 }
 
 // this function includes a post depending on whether it has an image
@@ -81,6 +86,7 @@ function findAndDisplayPosts($user_id = '')
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    closeDatabase($pdo);
     
     // After we fetch them all, only if there are posts to be displayed, do we display them
     // otherwise we return false

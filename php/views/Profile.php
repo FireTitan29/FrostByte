@@ -1,5 +1,10 @@
+<!-- Profile.php view: Displays the user's profile page.
+     Allows viewing and editing of profile information including
+     profile picture, name, bio, and theme settings. Also shows user's posts. -->
+
 <!-- Stop people from accessing the file directly -->
 <?php
+// Prevent direct access to this file
 if (!defined('APP_RUNNING')) {
     header("Location: ../../index.php");
     exit;
@@ -7,7 +12,7 @@ if (!defined('APP_RUNNING')) {
 ?>
 <div class="div-holder-top-profile" style="margin-bottom: 15px;">
     <div class="window-Profile" style="margin-bottom: 0px;">
-        <!-- Edit Profile Information -->
+        <!-- Edit Profile Information Section -->
         <?php if($view === 'profile' && isset($_GET['edit'])) :?>
             <!-- My solution for making it possible for the user to edit the profile picture
             my clicking on the current profile picture profile -->
@@ -66,7 +71,7 @@ if (!defined('APP_RUNNING')) {
                 <button type="submit" class="button-Profile">Cancel</button>
             </form>
         </div>
-        <!-- Normal Profile -->
+        <!-- Normal Profile View -->
         <?php else: ?>
         <div class="picture-info-Profile">
             <img class="picture-profile" src="<?php echo cleanHTML($_SESSION['user']['profile_pic'])?>" alt="profile-picture">
@@ -76,6 +81,11 @@ if (!defined('APP_RUNNING')) {
                         <h3 class="username-Profile"><?php echo cleanHTML($_SESSION['user']['fullname'])?></h3>
                         <span class="gender-Profile">(<?php echo cleanHTML($_SESSION['user']['gender'])?>)</span><br>
                         <span class="email-Profile"><?php echo cleanHTML($_SESSION['user']['email'])?></span><br>
+                    </div>
+                    <img src="icons/FriendsCount.svg" alt="FriendsIcon" class="friendsIcon">
+                    <div class="friends-Holder">
+                        <span class="friends-counter"><?php echo cleanHTML(countFriends($_SESSION['user']['id'])) ?></span>
+                        <span class="friends-text">Friends</span>
                     </div>
                     <div class="settings-holder">
                         <button onclick="slideOutSettings()" class="button-Profile settings-button"><img src="icons/Settings<?php if ($_SESSION['user']['theme'] === 'dark'){ echo "-Dark";}?>.svg" alt="Settings" class="settings-icon"></button>
@@ -98,6 +108,7 @@ if (!defined('APP_RUNNING')) {
         </div>
         <?php endif;?>
     </div>
+    <!-- Settings Window for Theme Personalization -->
     <div class="settings-window">
         <h3 class="settings-window-heading">Personalise your Experience</h3><br>
         <form class="settings-form">
@@ -113,6 +124,7 @@ if (!defined('APP_RUNNING')) {
         </form>
     </div>
 </div>
+<!-- Display User's Posts or Message if None -->
 <?php if(!findAndDisplayPosts($_SESSION['user']['id'])): ?>
   <h3 class="noPosts-Text">No Posts Yet...</h3>
 <?php endif; ?> 

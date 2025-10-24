@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['find'])) {
             }
         }
         echo json_encode($users);
+        closeDatabase($pdo);
     }
 } else {
         // Block direct URL access (no POST data), send user back to homepage (index)

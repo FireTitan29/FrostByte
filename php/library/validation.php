@@ -36,7 +36,7 @@ function checkEmailExists($email) {
         $stmt->bindValue(':email', $email);
 
         $stmt->execute();
-
+        closeDatabase($pdo);
         // if fetchColumn returns something, the email exists therefore
         // we cannot proceed with signup
         return (bool) $stmt->fetchColumn();
@@ -54,6 +54,7 @@ function checkPasswordIsCorrect($password, $email) {
     $stmt->bindValue(':email', $email);
     $stmt->execute();
     $pass_hash = $stmt->fetchColumn();
+    closeDatabase($pdo);
     
     return (bool) password_verify($password, $pass_hash);
 }

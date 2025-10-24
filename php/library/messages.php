@@ -22,7 +22,10 @@ function getConversationId($sender_id, $receiver_id) {
     $stmt->bindValue(':receiver', $receiver_id);
     $stmt->execute();
 
-    return $stmt->fetchColumn();
+    $id = $stmt->fetchColumn();
+    closeDatabase($pdo);
+
+    return $id;
 }
 
 
@@ -71,6 +74,7 @@ function findAndDisplayMessages($send_to, $user_id)
             includeMessage($message['sender_id'], $message['text_body'],
                 $message['created_at'], $message['is_read'], $addDateLine);
         }
+        closeDatabase($pdo);
         return true;
     }
 }
@@ -97,6 +101,7 @@ $stmt->execute();
 $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (!$conversations) {
+    closeDatabase($pdo);
     return false;
 } else {
     foreach ($conversations as $conv) {
@@ -112,6 +117,7 @@ if (!$conversations) {
         $stmt->execute();
         $lastMessage = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // If the message is the last message in the conversation
         if ($lastMessage) {
             $rawTime = $lastMessage['created_at'];
             $messageTime = strtotime($rawTime);
@@ -142,6 +148,7 @@ if (!$conversations) {
             include 'php/components/SingleMessage.php';
         }
     }
+    closeDatabase($pdo);
 }
 }
 ?>

@@ -17,7 +17,7 @@
         $stmt = $pdo->prepare('UPDATE notifications SET is_read = 1 WHERE user_id = :userid');
         $stmt->bindValue(':userid', $_SESSION['user']['id'], PDO::PARAM_INT);
         $stmt->execute();
-
+        closeDatabase($pdo);
     } else {
     header("Location: ../../index.php");
     exit;

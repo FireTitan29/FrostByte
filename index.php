@@ -29,7 +29,7 @@
     <div class="page-wrapper">
         <!-- Notifications bar -->
         <?php include 'php/components/NotificationsBar.php'; ?>
-
+        <!-- Message to The User -->
          <!-- Load view depending on session and $view -->
         <?php
         if ($sessionActive) {

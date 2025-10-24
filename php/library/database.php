@@ -2,10 +2,14 @@
 // Library: database.php
 // Purpose: Centralized functions for DB connections and queries
 // - connectToDatabase(): Opens a PDO connection with error handling
+// - closeDatabase(): Closes the PDO connection
 // - getUserDetailsEmail(): Fetches user info via email
 // - getUserDetailsID(): Fetches user info via ID
 // - readChat(): Marks unread messages in a chat as read
 // - countUnreadMessages(): Counts unread messages in a conversation
+// - countConversations(): counts all conversations a user is linked to
+// - countFriends(): counts all friends a user is linked to
+
 
 // Opens a PDO connection to the database
 // Returns the PDO object on success, or stops execution with an error message if the connection fails
@@ -14,9 +18,14 @@ function connectToDatabase() {
         $pdo = new PDO('mysql:host=localhost;dbname=frostbyte_social', 'root', '', [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         return $pdo;
-    } catch (PDOException $e) {
-        die("Connection to the DB failed, here's why: " . $e->getMessage());
+    } catch (PDOException $error) {
+        die("Connection to the DB failed, here's why: " . $error->getMessage());
     }
+}
+
+// Close the Database by destroying the object
+function closeDatabase(&$pdo) {
+    $pdo = null;
 }
 
 // Getting User Details using their email
@@ -28,7 +37,7 @@ function getUserDetailsEmail($email) {
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    closeDatabase($pdo);
     return $user;
 }
 
@@ -41,6 +50,7 @@ function getUserDetailsID($user_id) {
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    closeDatabase($pdo);
     return $user;
 }
 
@@ -52,6 +62,7 @@ function readChat($user_id, $conversation_id) {
     $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':convo', $conversation_id, PDO::PARAM_INT);
     $stmt->execute();
+    closeDatabase($pdo);
 }
 
 // This function counts all the unread messages
@@ -68,7 +79,7 @@ function countUnreadMessages($conversation_id, $user_id) {
     $stmt->bindValue(':userid', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':convo', $conversation_id, PDO::PARAM_INT);
     $stmt->execute();
-
+    closeDatabase($pdo);
     return (int) $stmt->fetchColumn();
 }
 
@@ -83,7 +94,22 @@ function countConversations($user_id) {
     ');
     $stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
+    closeDatabase($pdo);
+    return (int) $stmt->fetchColumn();
+}
 
+// This function counts all active friends for a user
+function countFriends($user_id) {
+    $pdo = connectToDatabase();
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) 
+        FROM friends 
+        WHERE user1_id = :id 
+        OR user2_id = :id
+    ');
+    $stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    closeDatabase($pdo);
     return (int) $stmt->fetchColumn();
 }
 

@@ -1,4 +1,10 @@
 <?php
+// Controller: Unfriend Users
+// This controller handles the logic for unfriending users
+// The script deletes the friendship record from the database. 
+// If the script is accessed directly (not via POST),
+// it redirects the user to the home page to prevent unauthorized access.
+
     session_start();
 
     include '../library/database.php';
@@ -19,6 +25,7 @@
         $stmt->bindValue(':user1', $user1, PDO::PARAM_INT);
         $stmt->bindValue(':user2', $user2, PDO::PARAM_INT);
         $stmt->execute();
+        closeDatabase($pdo);
 
     } else {
         // Block direct URL access (no POST data), send user back to index (home)

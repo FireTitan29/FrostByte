@@ -1,6 +1,10 @@
 <?php
-    session_start();
+    // Controller: Send Friend Request
+    // If a friend request is sent, then it is added to the Database through
+    // the sendFriendRequest Function
 
+    session_start();
+    
     include '../library/database.php';
     include '../library/friendRequests.php';
     include '../library/posts.php';
