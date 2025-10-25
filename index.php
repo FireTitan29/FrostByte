@@ -1,13 +1,14 @@
 <?php 
 // -----------------------------------------------------------
 // index.php
-// Purpose: Core entry point for FrostByte
+// Purpose: Main entry point for "FrostByte"
 // - Defines APP_RUNNING constant (prevents direct file access)
 // - Loads main.php (handles session, routing, and setup)
 // - Decides which view to include based on current user state
 // - Handles theme loading (dark/light mode)
 // -----------------------------------------------------------
     define('APP_RUNNING', true); 
+    include 'php/library/installer.php'; 
     include 'php/main.php'; 
 ?>
 

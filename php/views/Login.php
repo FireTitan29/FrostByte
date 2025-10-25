@@ -1,5 +1,5 @@
-// Login view - displays the login form and handles login-related messages
 <?php
+// Login view - displays the login form and handles login-related messages
 // Prevent direct access to this file
 if (!defined('APP_RUNNING')) {
     header("Location: ../../index.php");
