@@ -289,7 +289,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && $view === 'profile') {
     validateString($surname, 'surname', $errors);
 
     if (strlen($bio) > 120) {
-        $length = strlen($caption);
+        $length = strlen($bio);
         $errors['bio'] = "$length / 120 Characters, (120 Max)";
     }
 

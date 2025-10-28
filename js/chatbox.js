@@ -8,3 +8,13 @@
     
     // Putting the cursor into the input field
     inputBox.focus();
+
+// Function to refresh the page every 10 seconds
+function autoRefresh() {
+    setInterval(function () {
+        location.reload();
+    }, 10000);
+}
+
+// Start auto refresh when the page loads
+autoRefresh();
