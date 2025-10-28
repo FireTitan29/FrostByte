@@ -4,6 +4,8 @@ uploads/
 # But keep the folder itself visible in Git
 !uploads/.gitkeep
 
+sql/data.sql
+
 # Ignore system/OS junk
 .DS_Store
 Thumbs.db
